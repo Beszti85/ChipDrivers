@@ -15,6 +15,7 @@ void FLASH_W25_Identification( void )
 {
   // Read Jedec ID
   FLASH_TxBuffer[0] = 0x9Fu;
+  HAL_GPIO_WritePin(CS_FLASH_GPIO_Port, CS_FLASH_Pin, GPIO_PIN_RESET);
   HAL_SPI_TransmitReceive(&hspi1, FLASH_TxBuffer, FLASH_RxBuffer, 4u, 100u);
   HAL_GPIO_WritePin(CS_FLASH_GPIO_Port, CS_FLASH_Pin, GPIO_PIN_SET);
 }
