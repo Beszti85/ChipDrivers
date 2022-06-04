@@ -9,7 +9,11 @@
 #include "main.h"
 #include "leddrv_pca9685pw.h"
 
+static uint8_t PCA9685_RxBuffer[32u];
+static uint8_t PCA9685_TxBuffer[32u];
+
 void LEDDRV_PCA9685_ReadModeRegs( void )
 {
-
+	HAL_I2C_Master_Transmit(&hi2c1, LEDDRV_ADDR, PCA9685_TxBuffer, 1u, 100u);
+	HAL_I2C_Master_Receive(&hi2c1, LEDDRV_ADDR, PCA9685_RxBuffer, 2u, 100u);
 }
