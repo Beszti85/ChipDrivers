@@ -19,6 +19,18 @@ typedef enum
 
 typedef enum
 {
+  Digit0 = 1u,
+  Digit1,
+  Digit2,
+  Digit3,
+  Digit4,
+  Digit5,
+  Digit6,
+  Digit7,
+} MAX7219_Digit_e;
+
+typedef enum
+{
   TestOff = 0u,
   TestOn
 } MAX7219_TestMode_e;

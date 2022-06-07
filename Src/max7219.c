@@ -46,16 +46,28 @@ void MAX7219_SetDisplayTestMode( MAX7219_TestMode_e mode )
   SpiWrite( 2u );
 }
 
-void MAX7219_SetDigit( )
+void MAX7219_SetDigit( MAX7219_Digit_e digit, uint8_t value )
 {
-
+  // transfer buffer
+  MAX7219_TxBuffer[0u] = digit;
+  MAX7219_TxBuffer[1u] = mode;
+  SpiWrite( 2u );
 }
 
 void MAX7219_SetIntensity( uint8_t percentage )
 {
+  uint8_t value = 0u;
   // transfer buffer
   MAX7219_TxBuffer[0u] = REGADDR_INTENSITY;
-  // Calculate:
+  // 0%: switch off
+  if( percentage == 0u )
+  {
+    MAX7219_SetMode( Shutdown );
+  }
+  else
+  {
+
+  }
 
   MAX7219_TxBuffer[1u] = value;
   SpiWrite( 2u );
