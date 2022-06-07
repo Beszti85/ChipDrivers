@@ -5,6 +5,4 @@
  *      Author: drCsabesz
  */
 
-extern SPI_HandleTypeDef hspi1;
-
 void FLASH_W25_Identification( void );
