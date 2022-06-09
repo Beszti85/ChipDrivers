@@ -24,7 +24,8 @@
 #define REGADDR_SHUTDOWN   0x0Cu
 #define REGADDR_DPYTEST    0x0Fu
 
-uint8_t MAX7219_TxBuffer[12u] = {0u};
+uint8_t MAX7219_TxBuffer[2u] = {0u, 0u};
+uint8_t MAX7219_IntensityLimits[16u] = { 4u, 10u, 16u, 22u, 29u, 35u, 41u, 47u, 54u, 60u, 66u, 72u, 79, 85u, 91u, 97u };
 
 static void SpiWrite( uint8_t length );
 
@@ -50,13 +51,29 @@ void MAX7219_SetDigit( MAX7219_Digit_e digit, uint8_t value )
 {
   // transfer buffer
   MAX7219_TxBuffer[0u] = digit;
-  MAX7219_TxBuffer[1u] = mode;
+  MAX7219_TxBuffer[1u] = value;
+  SpiWrite( 2u );
+}
+
+void MAX7219_SetAllDigits( const uint8_t* ptrBuffer )
+{
+  for( int i = Digit0; i < EndOfDigits; i++ )
+  {
+    MAX7219_TxBuffer[0u] = i;
+    MAX7219_TxBuffer[1u] = *(ptrBuffer + (i - 1));
+  }
+}
+
+void MAX7219_SetIntensity50( void )
+{
+  // transfer buffer
+  MAX7219_TxBuffer[0u] = REGADDR_INTENSITY;
+  MAX7219_TxBuffer[1u] = Intensity_17_32;
   SpiWrite( 2u );
 }
 
 void MAX7219_SetIntensity( uint8_t percentage )
 {
-  uint8_t value = 0u;
   // transfer buffer
   MAX7219_TxBuffer[0u] = REGADDR_INTENSITY;
   // 0%: switch off
@@ -66,10 +83,16 @@ void MAX7219_SetIntensity( uint8_t percentage )
   }
   else
   {
-
+    for( int i = 0u; i < Intensity_NumOfValues; i++ )
+    {
+      if( MAX7219_IntensityLimits[i] <= percentage )
+      {
+        MAX7219_TxBuffer[1u] = i;
+        break;
+      }
+    }
   }
 
-  MAX7219_TxBuffer[1u] = value;
   SpiWrite( 2u );
 }
 
