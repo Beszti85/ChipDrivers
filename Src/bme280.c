@@ -17,15 +17,20 @@
 #define REGADDR_STATUS     0xF3u
 #define REGADDR_CTRL_MEAS  0xF4u
 #define REGADDR_CONFIG     0xF5u
-#define REGARDD_PRESS_MSB  0xF7u
+#define REGADDR_PRESS_MSB  0xF7u
+#define REGADDR_CALIB00    0x88u
+#define REGADDR_CALIB26    0xE1u
 
 static uint8_t BME280_TxBuffer[32u];
-static uint8_t BME280_RxBuffer[32u];
+static uint8_t BME280_RxBuffer[33u];
 
 extern I2C_HandleTypeDef hi2c1;
 
 bool BME280_Available = false;
 BME280_RawMeasVal_t BME280_RawValues = {0u};
+
+static void CalculateTemperature(uint32_t rawTemp);
+static void ReadCalibParams( void );
 
 void BME280_Detect( void )
 {
@@ -36,6 +41,8 @@ void BME280_Detect( void )
   if( BME280_RxBuffer[0u] == 0x60u )
   {
     BME280_Available = true;
+    // Read calibration
+    ReadCalibParams();
   }
 }
 
@@ -54,11 +61,28 @@ void BME280_StartMeasurement( BME280_Oversampling_e ovsTemp, BME280_Oversampling
 void BME280_ReadMeasResult( void )
 {
   // Set start address
-  BME280_TxBuffer[0u] = REGARDD_PRESS_MSB;
+  BME280_TxBuffer[0u] = REGADDR_PRESS_MSB;
   HAL_I2C_Master_Transmit(&hi2c1, BME280_ADDR, BME280_TxBuffer, 1u, 100u);
   HAL_I2C_Master_Receive(&hi2c1, BME280_ADDR, BME280_RxBuffer, 8u, 100u);
   // Extract the raw values
   BME280_RawValues.RawPres = (((uint32_t)BME280_RxBuffer[0u]) << 12u) | (((uint32_t)BME280_RxBuffer[1u]) << 4u) | (((uint32_t)BME280_RxBuffer[2u]) >> 4u);
   BME280_RawValues.RawTemp = (((uint32_t)BME280_RxBuffer[3u]) << 12u) | (((uint32_t)BME280_RxBuffer[4u]) << 4u) | (((uint32_t)BME280_RxBuffer[5u]) >> 4u);
   BME280_RawValues.RawHum  = (((uint32_t)BME280_RxBuffer[6u]) <<  8u) | (uint32_t)BME280_RxBuffer[7u];
+}
+
+static void ReadCalibParams( void )
+{
+  // Set start address calib 00...25
+  BME280_TxBuffer[0u] = REGADDR_CALIB00;
+  HAL_I2C_Master_Transmit(&hi2c1, BME280_ADDR, BME280_TxBuffer, 1u, 100u);
+  HAL_I2C_Master_Receive(&hi2c1, BME280_ADDR, BME280_RxBuffer, 25u, 100u);
+  // Set start address calib 00...25
+  BME280_TxBuffer[0u] = REGADDR_CALIB26;
+  HAL_I2C_Master_Transmit(&hi2c1, BME280_ADDR, BME280_TxBuffer, 1u, 100u);
+  HAL_I2C_Master_Receive(&hi2c1, BME280_ADDR, &BME280_RxBuffer[25u], 8u, 100u);
+}
+
+static void CalculateTemperature(uint32_t rawTemp)
+{
+
 }

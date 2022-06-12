@@ -57,10 +57,12 @@ typedef enum
   TestOn
 } MAX7219_TestMode_e;
 
+void MAX7219_Init( void );
 void MAX7219_SetMode( MAX7219_Mode_e mode );
 void MAX7219_SetDisplayTestMode( MAX7219_TestMode_e mode );
 void MAX7219_SetIntensity50( void );
 void MAX7219_SetIntensity( uint8_t percentage );
+void MAX7219_SetScanLimit( MAX7219_Digit_e digit );
 void MAX7219_SetDigit( MAX7219_Digit_e digit, uint8_t value );
 void MAX7219_SetAllDigits( const uint8_t* ptrBuffer );
 

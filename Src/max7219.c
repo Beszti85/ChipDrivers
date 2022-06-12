@@ -31,6 +31,15 @@ static void SpiWrite( uint8_t length );
 
 extern SPI_HandleTypeDef hspi1;
 
+void MAX7219_Init( void )
+{
+  MAX7219_SetMode(Normal);
+  MAX7219_SetMode(Normal);
+  MAX7219_SetDisplayTestMode( TestOff );
+  MAX7219_SetScanLimit( Digit7 );
+  MAX7219_SetIntensity50();
+}
+
 void MAX7219_SetMode( MAX7219_Mode_e mode )
 {
   // transfer buffer
@@ -44,6 +53,14 @@ void MAX7219_SetDisplayTestMode( MAX7219_TestMode_e mode )
   // transfer buffer
   MAX7219_TxBuffer[0u] = REGADDR_DPYTEST;
   MAX7219_TxBuffer[1u] = mode;
+  SpiWrite( 2u );
+}
+
+void MAX7219_SetScanLimit( MAX7219_Digit_e digit )
+{
+  // transfer buffer
+  MAX7219_TxBuffer[0u] = REGADDR_SCANLIMIT;
+  MAX7219_TxBuffer[1u] = digit - 1u;
   SpiWrite( 2u );
 }
 
@@ -61,6 +78,7 @@ void MAX7219_SetAllDigits( const uint8_t* ptrBuffer )
   {
     MAX7219_TxBuffer[0u] = i;
     MAX7219_TxBuffer[1u] = *(ptrBuffer + (i - 1));
+    SpiWrite( 2u );
   }
 }
 
