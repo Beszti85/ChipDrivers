@@ -18,6 +18,13 @@ typedef struct
   uint32_t RawPres;
 } BME280_RawMeasVal_t;
 
+typedef struct
+{
+  double Temperature;
+  double Humidity;
+  double PressureP;
+} BME280_PhysValues_t;
+
 typedef enum
 {
   MeasOff = 0u,
