@@ -22,7 +22,7 @@ typedef struct
 {
   double Temperature;
   double Humidity;
-  double PressureP;
+  double Pressure;
 } BME280_PhysValues_t;
 
 typedef enum

@@ -50,7 +50,7 @@ typedef struct
 } CalibData_t;
 
 static uint8_t BME280_TxBuffer[32u];
-static uint8_t BME280_RxBuffer[33u];
+static uint8_t BME280_RxBuffer[32u];
 static CalibData_t CalibData;
 
 extern I2C_HandleTypeDef hi2c1;
@@ -60,6 +60,8 @@ BME280_RawMeasVal_t BME280_RawValues = {0u};
 BME280_PhysValues_t BME280_PhysicalValues;
 
 static void CalculateTemperature( void );
+static void CalculatePressure( void );
+static void CalculateHumidity( void );
 static void ReadCalibParams( void );
 
 void BME280_Detect( void )
@@ -100,6 +102,8 @@ void BME280_ReadMeasResult( void )
   BME280_RawValues.RawHum  = (((uint32_t)BME280_RxBuffer[6u]) <<  8u) | (uint32_t)BME280_RxBuffer[7u];
   // Convert To Physical
   CalculateTemperature();
+  CalculateHumidity();
+  CalculatePressure();
 }
 
 static void ReadCalibParams( void )
@@ -111,7 +115,7 @@ static void ReadCalibParams( void )
   // Set start address calib 26...41
   BME280_TxBuffer[0u] = REGADDR_CALIB26;
   HAL_I2C_Master_Transmit(&hi2c1, BME280_ADDR, BME280_TxBuffer, 1u, 100u);
-  HAL_I2C_Master_Receive(&hi2c1, BME280_ADDR, &BME280_RxBuffer[25u], 8u, 100u);
+  HAL_I2C_Master_Receive(&hi2c1, BME280_ADDR, &BME280_RxBuffer[25u], 7u, 100u);
   // Set values
   CalibData.dig_T1 = BME280_CONCAT_BYTES(BME280_RxBuffer[1], BME280_RxBuffer[0]);
   CalibData.dig_T2 = (int16_t)BME280_CONCAT_BYTES(BME280_RxBuffer[3], BME280_RxBuffer[2]);
@@ -126,11 +130,11 @@ static void ReadCalibParams( void )
   CalibData.dig_P8 = (int16_t)BME280_CONCAT_BYTES(BME280_RxBuffer[21], BME280_RxBuffer[20]);
   CalibData.dig_P9 = (int16_t)BME280_CONCAT_BYTES(BME280_RxBuffer[23], BME280_RxBuffer[22]);
   CalibData.dig_H1 = BME280_RxBuffer[24];
-  CalibData.dig_H2 = (int16_t)BME280_CONCAT_BYTES(BME280_RxBuffer[25], BME280_RxBuffer[26]);
+  CalibData.dig_H2 = (int16_t)BME280_CONCAT_BYTES(BME280_RxBuffer[26], BME280_RxBuffer[25]);
   CalibData.dig_H3 = BME280_RxBuffer[27];
-  CalibData.dig_H4 = ((int16_t)((int8_t)BME280_RxBuffer[28]) << 4) | ((int16_t)(BME280_RxBuffer[29] & 0x0F));
-  CalibData.dig_H5 = ((int16_t)((int8_t)BME280_RxBuffer[31]) << 4) | ((int16_t)(BME280_RxBuffer[30] & 0x0F));
-  CalibData.dig_H6 = (int8_t)BME280_RxBuffer[32];
+  CalibData.dig_H4 = ((int16_t)((int8_t)BME280_RxBuffer[28]) << 4) | ((int16_t)(BME280_RxBuffer[29] & 0x0Fu));
+  CalibData.dig_H5 = ((int16_t)((int8_t)BME280_RxBuffer[30]) << 4) | ((int16_t)(BME280_RxBuffer[29] >> 4u & 0x0Fu));
+  CalibData.dig_H6 = (int8_t)BME280_RxBuffer[31];
 }
 
 static void CalculateTemperature( void )
@@ -158,4 +162,88 @@ static void CalculateTemperature( void )
   }
 
   BME280_PhysicalValues.Temperature = temperature;
+}
+
+/*!
+ * @brief This internal API is used to compensate the raw pressure data and
+ * return the compensated pressure data in double data type.
+ */
+static void CalculatePressure( void )
+{
+  double var1;
+  double var2;
+  double var3;
+  double pressure;
+  double pressure_min = 30000.0;
+  double pressure_max = 110000.0;
+
+  var1 = ((double)CalibData.t_Fine / 2.0) - 64000.0;
+  var2 = var1 * var1 * ((double)CalibData.dig_P6) / 32768.0;
+  var2 = var2 + var1 * ((double)CalibData.dig_P5) * 2.0;
+  var2 = (var2 / 4.0) + (((double)CalibData.dig_P4) * 65536.0);
+  var3 = ((double)CalibData.dig_P3) * var1 * var1 / 524288.0;
+  var1 = (var3 + ((double)CalibData.dig_P2) * var1) / 524288.0;
+  var1 = (1.0 + var1 / 32768.0) * ((double)CalibData.dig_P1);
+
+  /* avoid exception caused by division by zero */
+  if (var1 > (0.0))
+  {
+    pressure = 1048576.0 - (double) BME280_RawValues.RawPres;
+    pressure = (pressure - (var2 / 4096.0)) * 6250.0 / var1;
+    var1 = ((double)CalibData.dig_P9) * pressure * pressure / 2147483648.0;
+    var2 = pressure * ((double)CalibData.dig_P8) / 32768.0;
+    pressure = pressure + (var1 + var2 + ((double)CalibData.dig_P7)) / 16.0;
+
+    if (pressure < pressure_min)
+    {
+      pressure = pressure_min;
+    }
+    else if (pressure > pressure_max)
+    {
+      pressure = pressure_max;
+    }
+  }
+  else /* Invalid case */
+  {
+    pressure = pressure_min;
+  }
+
+  BME280_PhysicalValues.Pressure = pressure;
+}
+
+/*!
+ * @brief This internal API is used to compensate the raw humidity data and
+ * return the compensated humidity data in double data type.
+ */
+static void CalculateHumidity( void )
+{
+  double humidity;
+  double humidity_min = 0.0;
+  double humidity_max = 100.0;
+  double var1;
+  double var2;
+  double var3;
+  double var4;
+  double var5;
+  double var6;
+
+  var1 = ((double)CalibData.t_Fine) - 76800.0;
+  var2 = (((double)CalibData.dig_H4) * 64.0 + (((double)CalibData.dig_H5) / 16384.0) * var1);
+  var3 = BME280_RawValues.RawHum - var2;
+  var4 = ((double)CalibData.dig_H2) / 65536.0;
+  var5 = (1.0 + (((double)CalibData.dig_H3) / 67108864.0) * var1);
+  var6 = 1.0 + (((double)CalibData.dig_H6) / 67108864.0) * var1 * var5;
+  var6 = var3 * var4 * (var5 * var6);
+  humidity = var6 * (1.0 - ((double)CalibData.dig_H1) * var6 / 524288.0);
+
+  if (humidity > humidity_max)
+  {
+      humidity = humidity_max;
+  }
+  else if (humidity < humidity_min)
+  {
+      humidity = humidity_min;
+  }
+
+  BME280_PhysicalValues.Humidity = humidity;
 }
