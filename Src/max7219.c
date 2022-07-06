@@ -6,7 +6,6 @@
  */
 
 #include <max7219.h>
-#include "stm32f4xx_hal.h"
 #include "main.h"
 
 #define REGADDR_NOOP       0x00u
@@ -116,7 +115,7 @@ void MAX7219_SetIntensity( uint8_t percentage )
 
 static void SpiWrite( uint8_t length )
 {
-  HAL_GPIO_WritePin(CS_OUT2_GPIO_Port, CS_OUT2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(CS_MAX7219_GPIO_Port, CS_MAX7219_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi1, MAX7219_TxBuffer, length, 100u);
   HAL_GPIO_WritePin(CS_OUT2_GPIO_Port, CS_OUT2_Pin, GPIO_PIN_SET);
 }

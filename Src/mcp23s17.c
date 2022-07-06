@@ -5,7 +5,6 @@
  *      Author: drCsabesz
  */
 
-#include "stm32f4xx_hal.h"
 #include "main.h"
 #include "mcp23s17.h"
 
@@ -107,16 +106,16 @@ static void SpiWrite( uint8_t length )
 {
   // Set write address
   MCP23S17_TxBuffer[0] = 0x40u;
-  HAL_GPIO_WritePin(CS_OUT3_GPIO_Port, CS_OUT3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi1, MCP23S17_TxBuffer, length, 100u);
-  HAL_GPIO_WritePin(CS_OUT3_GPIO_Port, CS_OUT3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_SET);
 }
 
 static void SpiRead( uint8_t length )
 {
   // Set Read address
   MCP23S17_TxBuffer[0] = 0x41u;
-  HAL_GPIO_WritePin(CS_OUT3_GPIO_Port, CS_OUT3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_RESET);
   HAL_SPI_TransmitReceive(&hspi1, MCP23S17_TxBuffer, MCP23S17_RxBuffer, length, 100u);
-  HAL_GPIO_WritePin(CS_OUT3_GPIO_Port, CS_OUT3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_SET);
 }

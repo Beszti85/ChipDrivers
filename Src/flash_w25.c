@@ -4,7 +4,7 @@
  *  Created on: 2022. jún. 1.
  *      Author: drCsabesz
  */
-#include "stm32f4xx_hal.h"
+
 #include "main.h"
 #include "flash_w25.h"
 
