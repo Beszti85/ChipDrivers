@@ -1,7 +1,21 @@
-#ifndef _LCD_6PIN_H_
-#define _LCD_6PIN_H_
+/*
+ * lcd_char.h
+ *
+ *  Created on: 2022. júl. 30.
+ *      Author: drCsabesz
+ */
 
-#include "lcd_6pin_port.h"
+#ifndef INC_LCD_CHAR_H_
+#define INC_LCD_CHAR_H_
+
+#ifdef ATMEL_PROJECT
+#include "mcu_global.h"
+#include "my_typedef.h"
+#else
+#include <stdint.h>
+#include <stdbool.h>
+#include "main.h"
+#endif
 
 /********************************************
  * Character LCD driver library
@@ -58,23 +72,26 @@
 
 #define LCD_MODE_DEFAULT     ((1<<LCD_ENTRY_MODE) | (1<<LCD_ENTRY_INC) )
 
+/*
+ * Definitions for Display Size
+ * Change these definitions to adapt setting to your display
+ */
+#define LCD_LINES           2     /**< number of visible lines of the display */
+#define LCD_DISP_LENGTH    16     /**< visibles characters per line of the display */
+#define LCD_LINE_LENGTH  0x40     /**< internal line length of the display    */
+#define LCD_START_LINE1  0x00     /**< DDRAM address of first char of line 1 */
+#define LCD_START_LINE2  0x40     /**< DDRAM address of first char of line 2 */
+#define LCD_START_LINE3  0x14     /**< DDRAM address of first char of line 3 */
+#define LCD_START_LINE4  0x54     /**< DDRAM address of first char of line 4 */
+#define LCD_WRAP_LINES      0     /**< 0: no wrap, 1: wrap at end of visibile line */
+
 #if LCD_LINES==1
-#define LCD_FUNCTION_DEFAULT    LCD_FUNCTION_4BIT_1LINE 
+#define LCD_FUNCTION_DEFAULT    LCD_FUNCTION_4BIT_1LINE
 #else
-#define LCD_FUNCTION_DEFAULT    LCD_FUNCTION_4BIT_2LINES 
+#define LCD_FUNCTION_DEFAULT    LCD_FUNCTION_4BIT_2LINES
 #endif
 
-/***********************************************/
-
-/***********************************************
-*
-* Toggling the LCD Enable Pin
-*
-************************************************/
-
-void LcdToggle(void);
 void LcdInit(uint8_t dispMode);
-void LcdWrite(uint8_t data, uint8_t rs);
 void LcdClrScr(void);
 #if (LCD_LINES == 1)
 void LcdPuts(const char *s, uint8_t pos);
@@ -83,4 +100,4 @@ void LcdPuts(const char *s, uint8_t line, uint8_t pos);
 #endif
 void LcdPuts_basic(char *s);
 
-#endif
+#endif /* INC_LCD_CHAR_H_ */

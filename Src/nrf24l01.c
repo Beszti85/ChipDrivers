@@ -56,11 +56,72 @@ extern SPI_HandleTypeDef hspi1;
 #define REG_DYNPD             0x1Cu
 #define REG_FEATURE           0x1Du
 
+typedef struct
+{
+  uint8_t Addr;     // Command address
+  uint8_t Size;     // Command size
+} RegParam_t ;
+
+static uint8_t StatusReg = 0u;
+
+static const RegParam_t CmdParam[NRF24L01_REG_NUM] =
+{
+  { REG_CONFIG,      2u },
+  { REG_EN_AA,       2u },
+  { REG_EN_RXADDR,   2u },
+  { REG_SETUP_AW,    2u },
+  { REG_SETUP_RETR,  2u },
+  { REG_RF_CH,       2u },
+  { REG_RF_SETUP,    2u },
+  { REG_STATUS,      2u },
+  { REG_OBSERVE_TX,  2u },
+  { REG_CD,          2u },
+  { REG_RX_ADDR_P0,  6u },
+  { REG_RX_ADDR_P1,  6u },
+  { REG_RX_ADDR_P2,  6u },
+  { REG_RX_ADDR_P3,  6u },
+  { REG_RX_ADDR_P4,  6u },
+  { REG_RX_ADDR_P5,  6u },
+  { REG_TX_ADDR,     2u },
+  { REG_RX_PW_P0,    2u },
+  { REG_RX_PW_P1,    2u },
+  { REG_RX_PW_P2,    2u },
+  { REG_RX_PW_P3,    2u },
+  { REG_RX_PW_P4,    2u },
+  { REG_RX_PW_P5,    2u },
+  { REG_FIFO_STATUS, 2u },
+  { REG_DYNPD,       2u },
+  { REG_FEATURE,     2u },
+};
+
 void NRF24L01_Init( void )
 {
-  NRF24L01_TxBuffer[0u] = CMD_READ_REGISTER | REG_CONFIG;
-  SpiRead(128u);
+  for(int i = 0u; i < NRF24L01_REG_NUM; i++ )
+  {
+    NRF24L01_TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[i].Addr;
+    SpiRead(CmdParam[i].Size);
+  }
 }
+
+void NRF24L01_ReadRegister( NRF24L01_RegParam_e regId )
+{
+  NRF24L01_TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[regId].Addr;
+  SpiRead(CmdParam[regId].Size);
+}
+
+void NRF24L01_WriteRegister( NRF24L01_RegParam_e regId )
+{
+  NRF24L01_TxBuffer[0u] = CMD_WRITE_REGISTER | CmdParam[regId].Addr;
+  SpiWrite(CmdParam[regId].Size);
+}
+
+void NRF24L01_ReadRxPayload( uint8_t length )
+{
+  NRF24L01_TxBuffer[0u] = CMD_READ_RX_PAYLOAD;
+  SpiRead(length);
+}
+
+
 
 static void SpiWrite( uint8_t length )
 {

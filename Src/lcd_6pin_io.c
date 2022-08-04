@@ -1,4 +1,4 @@
-#include "lcd_6pin.h"
+#include <lcd_6pin_io.h>
 
 /********************************************
 * Character LCD driver library
@@ -92,89 +92,7 @@ void LcdClrScr(void)
 }
 
 
-/*************************************************************************
-Display string without auto linefeed 
-Input:    string to be displayed
-Returns:  none
-*************************************************************************/
 
-#if (LCD_LINES == 1)
-void LcdPuts(const char *s, uint8_t pos)
-#else
-void LcdPuts(const char *s, uint8_t line, uint8_t pos)
-#endif
-/* print string on lcd (no auto linefeed) */
-{
-    char c;
-	
-	/* Set starting point */
-	if (pos >= LCD_DISP_LENGTH)
-	{
-		/* Error handling*/
-		pos = LCD_DISP_LENGTH - 1;
-	}
-	
-	#if (LCD_LINES == 1)
-	LcdWrite((1<<LCD_DDRAM) + LCD_START_LINE1 + pos,0);
-	#elif ((LCD_LINES == 2) || (LCD_LINES == 4))
-	if (line == 1)
-	{
-		LcdWrite((1<<LCD_DDRAM) + LCD_START_LINE1 + pos,0);
-	}
-	else
-	if (line == 2)
-	{
-		LcdWrite((1<<LCD_DDRAM) + LCD_START_LINE2 + pos,0);
-	}
-	#if (LCD_LINES == 4)
-	else
-	if (line == 3)
-	{
-		LcdWrite((1<<LCD_DDRAM) + LCD_START_LINE3 + pos,0);
-	}
-	else
-	if (line == 4)
-	{
-		LcdWrite((1<<LCD_DDRAM) + LCD_START_LINE2 + pos,0);
-	}
-	#endif
-	else
-	{
-		/* Valami error kezelés */
-	}
-	#else
-	#error: "Value of LCD_LINES is wrong"
-	#endif
-
-	/* Write out the chars */
-    while ((c = *s))
-	{
-        LcdWrite(c, 1);
-		s++;
-    }
-}
-
-
-
-/*************************************************************************
-Display string without auto linefeed 
-Input:    string to be displayed
-Returns:  none
-*************************************************************************/
-
-void LcdPuts_basic(char *s)
-
-/* print string on lcd (no auto linefeed) */
-{
-    char c;
-	
-	/* Write out the chars */
-    while ((c = *s))
-	{
-        LcdWrite(c, 1);
-		s++;
-    }
-}
 
 
 
