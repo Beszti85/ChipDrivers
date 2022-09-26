@@ -5,7 +5,7 @@
  *      Author: drCsabesz
  */
 
-#include "stm32f4xx_hal.h"
+//#include "stm32f4xx_hal.h"
 #include "main.h"
 #include "max30100.h"
 

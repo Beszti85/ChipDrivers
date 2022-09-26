@@ -5,12 +5,13 @@
  *      Author: drCsabesz
  */
 
-#include "stm32f4xx_hal.h"
 #include "main.h"
 #include "leddrv_pca9685pw.h"
 
 static uint8_t PCA9685_RxBuffer[32u];
 static uint8_t PCA9685_TxBuffer[32u];
+
+#define LEDDRV_ADDR 0x00u
 
 void LEDDRV_PCA9685_ReadModeRegs( void )
 {
