@@ -33,8 +33,8 @@
 #define REGADDR_OLATA    0x14u
 #define REGADDR_OLATB    0x15u
 
-uint8_t MCP23S17_TxBuffer[16u];
-uint8_t MCP23S17_RxBuffer[16u];
+uint8_t MCP23S17_TxBuffer[23u];
+uint8_t MCP23S17_RxBuffer[23u];
 static uint8_t MCP23S17_Available = 0u;
 
 extern SPI_HandleTypeDef hspi1;
@@ -42,20 +42,20 @@ extern SPI_HandleTypeDef hspi1;
 static void SpiWrite( uint8_t length );
 static void SpiRead( uint8_t length );
 
-void MCP23S17_Init( void )
+void MCP23S17_Init( MCP23S17_Handler_t ptrHandler, SPI_HandleTypeDef* ptrSpiHandler );
 {
-  MCP23S17_ReadAllRegs();
-  if(   ( MCP23S17_RxBuffer[1] == 0xFFu )
-     && ( MCP23S17_RxBuffer[2] == 0xFFu ) )
+  MCP23S17_ReadAllRegs(ptrHandler);
+  if(   ( ptrHandler->RxBuffer[1] == 0xFFu )
+     && ( ptrHandler->RxBuffer[2] == 0xFFu ) )
   {
-    MCP23S17_Available = 1u;
+    ptrHandler->Available = 1u;
   }
 }
 
-void MCP23S17_ReadAllRegs( void )
+void MCP23S17_ReadAllRegs( MCP23S17_Handler_t ptrHandler );
 {
-  MCP23S17_TxBuffer[1] = 0x41u;
-  MCP23S17_TxBuffer[3] = 0x00u;
+  ptrHandler->TxBuffer[1] = 0x41u;
+  ptrHandler->TxBuffer[3] = 0x00u;
   SpiRead( 23u );
 }
 

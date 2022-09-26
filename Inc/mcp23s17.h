@@ -10,11 +10,22 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "stm32f4xx_hal.h"
+#include "main.h"
 
-void MCP23S17_Init( void );
-void MCP23S17_SetIODirectionAB( uint8_t portAValue, uint8_t portBValue );
-void MCP23S17_WriteOutputA( uint8_t value );
-void MCP23S17_WriteOutputB( uint8_t value );
-void MCP23S17_ReadAllRegs( void );
+typedef struct
+{
+  SPI_HandleTypeDef* ptrHSpi;
+  uint8_t TxBuffer[24u];
+  uint8_t RxBuffer[24u];
+  uint8_t Available = 0u;
+  uint8_t Padding[3u];
+} MCP23S17_Handler_t;
+
+void MCP23S17_Init( MCP23S17_Handler_t ptrHandler, SPI_HandleTypeDef* ptrSpiHandler );
+void MCP23S17_SetIODirectionAB( MCP23S17_Handler_t ptrHandler, uint8_t portAValue, uint8_t portBValue );
+void MCP23S17_WriteOutputA( MCP23S17_Handler_t ptrHandler, uint8_t value );
+void MCP23S17_WriteOutputB( MCP23S17_Handler_t ptrHandler, uint8_t value );
+void MCP23S17_ReadAllRegs( MCP23S17_Handler_t ptrHandler );
 
 #endif /* INC_MCP23S17_H_ */
