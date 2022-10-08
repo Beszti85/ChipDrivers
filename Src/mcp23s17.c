@@ -32,16 +32,10 @@
 #define REGADDR_OLATA    0x14u
 #define REGADDR_OLATB    0x15u
 
-uint8_t MCP23S17_TxBuffer[23u];
-uint8_t MCP23S17_RxBuffer[23u];
-static uint8_t MCP23S17_Available = 0u;
+static void SpiWrite( MCP23S17_Handler_t* ptrHandler, uint8_t length );
+static void SpiRead( MCP23S17_Handler_t* ptrHandler, uint8_t length );
 
-extern SPI_HandleTypeDef hspi1;
-
-static void SpiWrite( uint8_t length );
-static void SpiRead( uint8_t length );
-
-void MCP23S17_Init( MCP23S17_Handler_t ptrHandler, SPI_HandleTypeDef* ptrSpiHandler );
+void MCP23S17_Init( MCP23S17_Handler_t* ptrHandler )
 {
   MCP23S17_ReadAllRegs(ptrHandler);
   if(   ( ptrHandler->RxBuffer[1] == 0xFFu )
@@ -51,77 +45,77 @@ void MCP23S17_Init( MCP23S17_Handler_t ptrHandler, SPI_HandleTypeDef* ptrSpiHand
   }
 }
 
-void MCP23S17_ReadAllRegs( MCP23S17_Handler_t ptrHandler );
+void MCP23S17_ReadAllRegs( MCP23S17_Handler_t* ptrHandler )
 {
   ptrHandler->TxBuffer[1] = 0x41u;
   ptrHandler->TxBuffer[3] = 0x00u;
-  SpiRead( 23u );
+  SpiRead( ptrHandler, 23u );
 }
 
-void MCP23S17_SetIODirectionA( uint8_t value )
+void MCP23S17_SetIODirectionA( MCP23S17_Handler_t* ptrHandler, uint8_t value )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_IODIRA;
-  MCP23S17_TxBuffer[2u] = value;
-  SpiWrite(3u);
+  ptrHandler->TxBuffer[1u] = REGADDR_IODIRA;
+  ptrHandler->TxBuffer[2u] = value;
+  SpiWrite( ptrHandler, 3u );
 }
 
-void MCP23S17_SetIODirectionB( uint8_t value )
+void MCP23S17_SetIODirectionB( MCP23S17_Handler_t* ptrHandler, uint8_t value )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_IODIRB;
-  MCP23S17_TxBuffer[2u] = value;
-  SpiWrite(3u);
+  ptrHandler->TxBuffer[1u] = REGADDR_IODIRB;
+  ptrHandler->TxBuffer[2u] = value;
+  SpiWrite( ptrHandler, 3u );
 }
 
-void MCP23S17_SetIODirectionAB( uint8_t portAValue, uint8_t portBValue )
+void MCP23S17_SetIODirectionAB( MCP23S17_Handler_t* ptrHandler, uint8_t portAValue, uint8_t portBValue )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_IODIRA;
-  MCP23S17_TxBuffer[2u] = portAValue;
-  MCP23S17_TxBuffer[3u] = portBValue;
-  SpiWrite(4u);
+  ptrHandler->TxBuffer[1u] = REGADDR_IODIRA;
+  ptrHandler->TxBuffer[2u] = portAValue;
+  ptrHandler->TxBuffer[3u] = portBValue;
+  SpiWrite( ptrHandler, 4u );
 }
 
-uint8_t MCP23S17_ReadPortA( void )
+uint8_t MCP23S17_ReadPortA( MCP23S17_Handler_t* ptrHandler )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_GPIOA;
-  SpiRead(3u);
-  return MCP23S17_RxBuffer[2u];
+  ptrHandler->TxBuffer[1u] = REGADDR_GPIOA;
+  SpiRead( ptrHandler, 3u );
+  return ptrHandler->RxBuffer[2u];
 }
 
-void MCP23S17_WritePortA( uint8_t value )
+void MCP23S17_WritePortA( MCP23S17_Handler_t* ptrHandler, uint8_t value )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_OLATA;
-  MCP23S17_TxBuffer[2u] = value;
-  SpiWrite(3u);
+  ptrHandler->TxBuffer[1u] = REGADDR_OLATA;
+  ptrHandler->TxBuffer[2u] = value;
+  SpiWrite( ptrHandler, 3u );
 }
 
-uint8_t MCP23S17_ReadPortB( void )
+uint8_t MCP23S17_ReadPortB( MCP23S17_Handler_t* ptrHandler )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_GPIOB;
-  SpiRead(3u);
-  return MCP23S17_RxBuffer[2u];
+  ptrHandler->TxBuffer[1u] = REGADDR_GPIOB;
+  SpiRead( ptrHandler, 3u );
+  return ptrHandler->RxBuffer[2u];
 }
 
-void MCP23S17_WritePortB( uint8_t value )
+void MCP23S17_WritePortB( MCP23S17_Handler_t* ptrHandler, uint8_t value )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_OLATB;
-  MCP23S17_TxBuffer[2u] = value;
-  SpiWrite(3u);
+  ptrHandler->TxBuffer[1u] = REGADDR_OLATB;
+  ptrHandler->TxBuffer[2u] = value;
+  SpiWrite( ptrHandler, 3u );
 }
 
-void MCP23S17_WritePortAB( uint8_t portAValue, uint8_t portBValue )
+void MCP23S17_WritePortAB( MCP23S17_Handler_t* ptrHandler, uint8_t portAValue, uint8_t portBValue )
 {
-  MCP23S17_TxBuffer[1u] = REGADDR_OLATA;
-  MCP23S17_TxBuffer[2u] = portAValue;
-  MCP23S17_TxBuffer[3u] = portBValue;
-  SpiWrite(4u);
+  ptrHandler->TxBuffer[1u] = REGADDR_OLATA;
+  ptrHandler->TxBuffer[2u] = portAValue;
+  ptrHandler->TxBuffer[3u] = portBValue;
+  SpiWrite( ptrHandler, 4u );
 }
 
-void MCP23S17_WritePinA( uint8_t pin, uint8_t value )
+void MCP23S17_WritePinA( MCP23S17_Handler_t* ptrHandler, uint8_t pin, uint8_t value )
 {
   uint8_t portValue = 0u;
-  MCP23S17_TxBuffer[1u] = REGADDR_GPIOA;
-  SpiRead(3u);
-  portValue = MCP23S17_RxBuffer[2u];
+  ptrHandler->TxBuffer[1u] = REGADDR_GPIOA;
+  SpiRead( ptrHandler, 3u );
+  portValue = ptrHandler->RxBuffer[2u];
   if( 0u == value)
   {
     portValue &= ~(1 << pin);
@@ -130,17 +124,17 @@ void MCP23S17_WritePinA( uint8_t pin, uint8_t value )
   {
     portValue |= (1 << pin);
   }
-  MCP23S17_TxBuffer[1u] = REGADDR_OLATA;
-  MCP23S17_TxBuffer[2u] = portValue;
-  SpiWrite(3u);
+  ptrHandler->TxBuffer[1u] = REGADDR_OLATA;
+  ptrHandler->TxBuffer[2u] = portValue;
+  SpiWrite( ptrHandler, 3u );
 }
 
-void MCP23S17_WritePinB( uint8_t pin, uint8_t value )
+void MCP23S17_WritePinB( MCP23S17_Handler_t* ptrHandler, uint8_t pin, uint8_t value )
 {
   uint8_t portValue = 0u;
-  MCP23S17_TxBuffer[1u] = REGADDR_GPIOB;
-  SpiRead(3u);
-  portValue = MCP23S17_RxBuffer[2u];
+  ptrHandler->TxBuffer[1u] = REGADDR_GPIOB;
+  SpiRead( ptrHandler, 3u );
+  portValue = ptrHandler->RxBuffer[2u];
   if( 0u == value)
   {
     portValue &= ~(1 << pin);
@@ -149,25 +143,25 @@ void MCP23S17_WritePinB( uint8_t pin, uint8_t value )
   {
     portValue |= (1 << pin);
   }
-  MCP23S17_TxBuffer[1u] = REGADDR_OLATB;
-  MCP23S17_TxBuffer[2u] = portValue;
-  SpiWrite(3u);
+  ptrHandler->TxBuffer[1u] = REGADDR_OLATB;
+  ptrHandler->TxBuffer[2u] = portValue;
+  SpiWrite( ptrHandler, 3u );
 }
 
-static void SpiWrite( uint8_t length )
+static void SpiWrite( MCP23S17_Handler_t* ptrHandler, uint8_t length )
 {
   // Set write address
-  MCP23S17_TxBuffer[0] = 0x40u;
-  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(&hspi1, MCP23S17_TxBuffer, length, 100u);
-  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_SET);
+  ptrHandler->TxBuffer[0] = 0x40u;
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
 
-static void SpiRead( uint8_t length )
+static void SpiRead( MCP23S17_Handler_t* ptrHandler, uint8_t length )
 {
   // Set Read address
-  MCP23S17_TxBuffer[0] = 0x41u;
-  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_RESET);
-  HAL_SPI_TransmitReceive(&hspi1, MCP23S17_TxBuffer, MCP23S17_RxBuffer, length, 100u);
-  HAL_GPIO_WritePin(CS_MCP23S17_GPIO_Port, CS_MCP23S17_Pin, GPIO_PIN_SET);
+  ptrHandler->TxBuffer[0] = 0x41u;
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+  HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length, 100u);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
