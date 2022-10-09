@@ -39,10 +39,6 @@ typedef enum
   NRF24L01_REG_NUM
 } NRF24L01_RegParam_e;
 
-typedef struct
-{
-
-};
 
 void NRF24L01_Init( void );
 

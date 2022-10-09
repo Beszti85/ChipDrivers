@@ -15,6 +15,8 @@
 #define PIN_E  4u
 #define PIN_RS 5u
 
+static MCP23S17_Handler_t SpiHandler;
+
 /********************************************
 * Character LCD driver library
 * 4 bit mode, R/W connected to ground
@@ -30,9 +32,9 @@ static void WrieDataPins(uint8_t data);
 ************************************************/
 void LcdToggleE(void)
 {
-  MCP23S17_WritePinA(PIN_E, 1);
+  MCP23S17_WritePinA(&SpiHandler, PIN_E, 1);
   DELAY_MS(1);
-  MCP23S17_WritePinA(PIN_E, 0);
+  MCP23S17_WritePinA(&SpiHandler, PIN_E, 0);
   DELAY_MS(1);
 }
 
@@ -47,11 +49,11 @@ void LcdWrite(uint8_t data, uint8_t rs)
 
   if (rs == 1)
   {
-    MCP23S17_WritePinA(PIN_RS, 1);
+    MCP23S17_WritePinA(&SpiHandler, PIN_RS, 1);
   }
   else
   {
-    MCP23S17_WritePinA(PIN_RS, 0);
+    MCP23S17_WritePinA(&SpiHandler, PIN_RS, 0);
   }
   // set data port value
   if (data & 0x80)
@@ -115,8 +117,8 @@ void LcdWrite(uint8_t data, uint8_t rs)
 
 void LcdPortInit(void)
 {
-  MCP23S17_SetIODirectionAB(0u, 0u);
-  MCP23S17_WritePortAB(0xC0u, 0xFFu);
+  MCP23S17_SetIODirectionAB(&SpiHandler, 0u, 0u);
+  MCP23S17_WritePortAB(&SpiHandler, 0xC0u, 0xFFu);
 
   DELAY_MS(100);
 
@@ -146,23 +148,23 @@ static void ClearPort(void)
 {
   uint8_t portValue = 0u;
   // read data port
-  portValue = MCP23S17_ReadPortA();
+  portValue = MCP23S17_ReadPortA(&SpiHandler);
   // clear port bits
   portValue &= 0xC0u;
   // write dat port
-  MCP23S17_WritePortA(portValue);
+  MCP23S17_WritePortA(&SpiHandler, portValue);
 }
 
 static void WrieDataPins(uint8_t data)
 {
   uint8_t portValue = 0u;
   // read data port
-  portValue = MCP23S17_ReadPortA();
+  portValue = MCP23S17_ReadPortA(&SpiHandler);
   // clear data bits
   data &= 0x0Fu;
   portValue &= 0xF0u;
   portValue |= data;
   // write dat port
-  MCP23S17_WritePortA(portValue);
+  MCP23S17_WritePortA(&SpiHandler, portValue);
 }
 

@@ -14,4 +14,4 @@ typedef enum
   NUM_SUPPORTED_DEVICES
 } FLASH_W25_Type_e;
 
-void FLASH_W25_Identification( void );
+void FLASH_Identification( void );
