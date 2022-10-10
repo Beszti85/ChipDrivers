@@ -115,8 +115,13 @@ void LcdWrite(uint8_t data, uint8_t rs)
 *
 ***********************************************/
 
-void LcdPortInit(void)
+void LcdPortInit( SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort, uint16_t gpioPin  )
 {
+  SpiHandler.ptrHSpi = ptrSpi;
+  SpiHandler.portCS  = ptrGpioPort;
+  SpiHandler.pinCS   = gpioPin;
+
+  MCP23S17_Init(&SpiHandler);
   MCP23S17_SetIODirectionAB(&SpiHandler, 0u, 0u);
   MCP23S17_WritePortAB(&SpiHandler, 0xC0u, 0xFFu);
 

@@ -19,7 +19,7 @@
 #define DELAY_MS(x)   HAL_Delay(x)
 #endif
 
-void LcdPortInit(void);
+void LcdPortInit_MCP23S17( SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort, uint16_t gpioPin );
 void LcdWrite(uint8_t data, uint8_t rs);
 
 #endif /* INC_LCD_6PIN_MCP23S17_H_ */

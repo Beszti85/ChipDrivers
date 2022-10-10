@@ -91,7 +91,8 @@
 #define LCD_FUNCTION_DEFAULT    LCD_FUNCTION_4BIT_2LINES
 #endif
 
-void LcdInit(uint8_t dispMode);
+void LcdInit_GPIO(uint8_t dispMode);
+void LcdInit_MSP23S17(uint8_t dispMode, SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort, uint16_t gpioPin);
 void LcdClrScr(void);
 #if (LCD_LINES == 1)
 void LcdPuts(const char *s, uint8_t pos);

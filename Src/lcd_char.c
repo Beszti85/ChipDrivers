@@ -20,7 +20,35 @@
 * Returns:  none
 *
 ***********************************************/
-void LcdInit(uint8_t dispMode)
+void LcdInit_MSP23S17(uint8_t dispMode, SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort, uint16_t gpioPin)
+{
+  LcdPortInit(ptrSpi, ptrGpioPort, gpioPin);
+
+  LcdWrite(LCD_FUNCTION_DEFAULT, 0);
+
+  DELAY_MS(5);
+
+  LcdWrite(LCD_DISP_OFF, 0);
+
+  LcdClrScr();
+
+  LcdWrite(dispMode, 0);
+}
+
+/***********************************************
+*
+* LCD initialisation
+*
+* PORT DIR initialisation done in global board
+* Initialize display and select type of cursor
+* Input:    dispMode LCD_DISP_OFF            display off
+*                    LCD_DISP_ON             display on, cursor off
+*                    LCD_DISP_ON_CURSOR      display on, cursor on
+*                    LCD_DISP_CURSOR_BLINK   display on, cursor on flashing
+* Returns:  none
+*
+***********************************************/
+void LcdInit_GPIO(uint8_t dispMode)
 {
   LcdPortInit();
 
