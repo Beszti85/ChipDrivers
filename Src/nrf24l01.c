@@ -8,8 +8,8 @@
 #include "main.h"
 #include "nrf24l01.h"
 
-static void SpiWrite( uint8_t length );
-static void SpiRead( uint8_t length );
+static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length );
+static void SpiRead( NRF24L01_Handler_t* ptrHandler, uint8_t length );
 
 uint8_t NRF24L01_TxBuffer[32u];
 uint8_t NRF24L01_RxBuffer[128u];
@@ -94,45 +94,43 @@ static const RegParam_t CmdParam[NRF24L01_REG_NUM] =
   { REG_FEATURE,     2u },
 };
 
-void NRF24L01_Init( void )
+void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler, NRF24L01_Handler_t* ptrHandler )
 {
   for(int i = 0u; i < NRF24L01_REG_NUM; i++ )
   {
-    NRF24L01_TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[i].Addr;
-    SpiRead(CmdParam[i].Size);
+    ptrHandler->TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[i].Addr;
+    SpiRead(ptrHandler, CmdParam[i].Size);
   }
 }
 
-void NRF24L01_ReadRegister( NRF24L01_RegParam_e regId )
+void NRF24L01_ReadRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
 {
-  NRF24L01_TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[regId].Addr;
+  ptrHandler->TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[regId].Addr;
   SpiRead(CmdParam[regId].Size);
 }
 
-void NRF24L01_WriteRegister( NRF24L01_RegParam_e regId )
+void NRF24L01_WriteRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
 {
-  NRF24L01_TxBuffer[0u] = CMD_WRITE_REGISTER | CmdParam[regId].Addr;
+  ptrHandler->TxBuffer[0u] = CMD_WRITE_REGISTER | CmdParam[regId].Addr;
   SpiWrite(CmdParam[regId].Size);
 }
 
-void NRF24L01_ReadRxPayload( uint8_t length )
+void NRF24L01_ReadRxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
-  NRF24L01_TxBuffer[0u] = CMD_READ_RX_PAYLOAD;
+  ptrHandler->TxBuffer[0u] = CMD_READ_RX_PAYLOAD;
   SpiRead(length);
 }
 
-
-
-static void SpiWrite( uint8_t length )
+static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
-  HAL_GPIO_WritePin(CS_NRF24L01_GPIO_Port, CS_NRF24L01_Pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(&hspi1, NRF24L01_TxBuffer, length, 100u);
-  HAL_GPIO_WritePin(CS_NRF24L01_GPIO_Port, CS_NRF24L01_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
 
-static void SpiRead( uint8_t length )
+static void SpiRead( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
-  HAL_GPIO_WritePin(CS_NRF24L01_GPIO_Port, CS_NRF24L01_Pin, GPIO_PIN_RESET);
-  HAL_SPI_TransmitReceive(&hspi1, NRF24L01_TxBuffer,NRF24L01_RxBuffer, length, 100u);
-  HAL_GPIO_WritePin(CS_NRF24L01_GPIO_Port, CS_NRF24L01_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+  HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length, 100u);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
