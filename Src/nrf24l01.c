@@ -94,7 +94,7 @@ static const RegParam_t CmdParam[NRF24L01_REG_NUM] =
   { REG_FEATURE,     2u },
 };
 
-void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler, NRF24L01_Handler_t* ptrHandler )
+void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler )
 {
   for(int i = 0u; i < NRF24L01_REG_NUM; i++ )
   {
@@ -106,19 +106,19 @@ void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler, NRF24L01_Handler_t* ptrHandl
 void NRF24L01_ReadRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
 {
   ptrHandler->TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[regId].Addr;
-  SpiRead(CmdParam[regId].Size);
+  SpiRead(ptrHandler, CmdParam[regId].Size);
 }
 
 void NRF24L01_WriteRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
 {
   ptrHandler->TxBuffer[0u] = CMD_WRITE_REGISTER | CmdParam[regId].Addr;
-  SpiWrite(CmdParam[regId].Size);
+  SpiWrite(ptrHandler, CmdParam[regId].Size);
 }
 
 void NRF24L01_ReadRxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
   ptrHandler->TxBuffer[0u] = CMD_READ_RX_PAYLOAD;
-  SpiRead(length);
+  SpiRead(ptrHandler, length);
 }
 
 static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length )
