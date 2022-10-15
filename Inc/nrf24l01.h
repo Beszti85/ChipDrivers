@@ -52,8 +52,10 @@ typedef struct
   uint16_t pinCE;
   uint8_t TxBuffer[24u];
   uint8_t RxBuffer[24u];
+  uint8_t RegisterMap[64u];
+  uint8_t StatusReg;
   uint8_t Available;
-  uint8_t Padding[3u];
+  uint8_t Padding[2u];
 } NRF24L01_Handler_t;
 
 void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler );

@@ -62,8 +62,6 @@ typedef struct
   uint8_t Size;     // Command size
 } RegParam_t ;
 
-static uint8_t StatusReg = 0u;
-
 static const RegParam_t CmdParam[NRF24L01_REG_NUM] =
 {
   { REG_CONFIG,      2u },
@@ -78,11 +76,11 @@ static const RegParam_t CmdParam[NRF24L01_REG_NUM] =
   { REG_CD,          2u },
   { REG_RX_ADDR_P0,  6u },
   { REG_RX_ADDR_P1,  6u },
-  { REG_RX_ADDR_P2,  6u },
-  { REG_RX_ADDR_P3,  6u },
-  { REG_RX_ADDR_P4,  6u },
-  { REG_RX_ADDR_P5,  6u },
-  { REG_TX_ADDR,     2u },
+  { REG_RX_ADDR_P2,  2u },
+  { REG_RX_ADDR_P3,  2u },
+  { REG_RX_ADDR_P4,  2u },
+  { REG_RX_ADDR_P5,  2u },
+  { REG_TX_ADDR,     6u },
   { REG_RX_PW_P0,    2u },
   { REG_RX_PW_P1,    2u },
   { REG_RX_PW_P2,    2u },
@@ -96,10 +94,17 @@ static const RegParam_t CmdParam[NRF24L01_REG_NUM] =
 
 void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler )
 {
+  uint8_t mapIndex = 0u;
   for(int i = 0u; i < NRF24L01_REG_NUM; i++ )
   {
     ptrHandler->TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[i].Addr;
     SpiRead(ptrHandler, CmdParam[i].Size);
+    ptrHandler->RegisterMap[mapIndex] = i;
+    for(int j = 1u; j < CmdParam[i].Size; j++)
+    {
+      ptrHandler->RegisterMap[mapIndex+j] = ptrHandler->RxBuffer[j];
+    }
+    mapIndex += CmdParam[i].Size;
   }
 }
 
@@ -133,4 +138,5 @@ static void SpiRead( NRF24L01_Handler_t* ptrHandler, uint8_t length )
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
   HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length, 100u);
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
+  ptrHandler->StatusReg = *(ptrHandler->RxBuffer);
 }
