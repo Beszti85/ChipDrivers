@@ -50,8 +50,8 @@ typedef struct
   uint16_t pinCS;
   GPIO_TypeDef* portCE;
   uint16_t pinCE;
-  uint8_t TxBuffer[24u];
-  uint8_t RxBuffer[24u];
+  uint8_t TxBuffer[32u];
+  uint8_t RxBuffer[32u];
   uint8_t RegisterMap[64u];
   uint8_t StatusReg;
   uint8_t Available;
@@ -62,5 +62,7 @@ void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler );
 void NRF24L01_ReadRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId );
 void NRF24L01_WriteRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId );
 void NRF24L01_ReadRxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length );
+void NRF24L01_WriteTxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length );
+void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value );
 
 #endif /* INC_NRF24L01_H_ */

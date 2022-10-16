@@ -126,6 +126,17 @@ void NRF24L01_ReadRxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length )
   SpiRead(ptrHandler, length);
 }
 
+void NRF24L01_WriteTxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length )
+{
+  ptrHandler->TxBuffer[0u] = CMD_WRITE_TX_PAYLOAD;
+  SpiRead(ptrHandler, length);
+}
+
+void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value )
+{
+  HAL_GPIO_WritePin(ptrHandler->portCE, ptrHandler->pinCE, value);
+}
+
 static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
