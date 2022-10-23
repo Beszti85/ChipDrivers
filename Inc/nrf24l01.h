@@ -63,6 +63,8 @@ void NRF24L01_ReadRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e 
 void NRF24L01_WriteRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId );
 void NRF24L01_ReadRxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length );
 void NRF24L01_WriteTxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length );
+void NRF24L01_FlushTx( NRF24L01_Handler_t* ptrHandler );
+void NRF24L01_FlushRx( NRF24L01_Handler_t* ptrHandler );
 void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value );
 
 #endif /* INC_NRF24L01_H_ */

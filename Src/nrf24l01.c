@@ -123,13 +123,25 @@ void NRF24L01_WriteRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e
 void NRF24L01_ReadRxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
   ptrHandler->TxBuffer[0u] = CMD_READ_RX_PAYLOAD;
-  SpiRead(ptrHandler, length);
+  SpiRead(ptrHandler, length+1u);
 }
 
-void NRF24L01_WriteTxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length )
+void NRF24L01_WriteTxPayload( NRF24L01_Handler_t* ptrHandle, uint8_t length )
 {
   ptrHandler->TxBuffer[0u] = CMD_WRITE_TX_PAYLOAD;
-  SpiRead(ptrHandler, length);
+  SpiWrite(ptrHandler, length+1u);
+}
+
+void NRF24L01_FlushTx( NRF24L01_Handler_t* ptrHandler )
+{
+  ptrHandler->TxBuffer[0u] = CMD_FLUSH_TX;
+  SpiWrite(ptrHandler, 1u);
+}
+
+void NRF24L01_FlushRx( NRF24L01_Handler_t* ptrHandler )
+{
+  ptrHandler->TxBuffer[0u] = CMD_FLUSH_RX;
+  SpiWrite(ptrHandler, 1u);
 }
 
 void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value )
