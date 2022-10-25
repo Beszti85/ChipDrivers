@@ -22,7 +22,7 @@
 ***********************************************/
 void LcdInit_MSP23S17(uint8_t dispMode, SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort, uint16_t gpioPin)
 {
-  LcdPortInit(ptrSpi, ptrGpioPort, gpioPin);
+  LcdPortInit_MCP23S17(ptrSpi, ptrGpioPort, gpioPin);
 
   LcdWrite(LCD_FUNCTION_DEFAULT, 0);
 
@@ -50,7 +50,7 @@ void LcdInit_MSP23S17(uint8_t dispMode, SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef*
 ***********************************************/
 void LcdInit_GPIO(uint8_t dispMode)
 {
-  LcdPortInit();
+  LcdPortInit_GPIO();
 
   LcdWrite(LCD_FUNCTION_DEFAULT, 0);
 

@@ -11,11 +11,6 @@
 static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length );
 static void SpiRead( NRF24L01_Handler_t* ptrHandler, uint8_t length );
 
-uint8_t NRF24L01_TxBuffer[32u];
-uint8_t NRF24L01_RxBuffer[128u];
-
-extern SPI_HandleTypeDef hspi1;
-
 #define CMD_READ_REGISTER     0x00u
 #define CMD_WRITE_REGISTER    0x20u
 #define CMD_READ_RX_PAYLOAD   0x61u

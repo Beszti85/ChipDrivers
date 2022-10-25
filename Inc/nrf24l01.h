@@ -50,8 +50,8 @@ typedef struct
   uint16_t pinCS;
   GPIO_TypeDef* portCE;
   uint16_t pinCE;
-  uint8_t TxBuffer[32u];
-  uint8_t RxBuffer[32u];
+  uint8_t TxBuffer[36u];
+  uint8_t RxBuffer[36u];
   uint8_t RegisterMap[64u];
   uint8_t StatusReg;
   uint8_t Available;

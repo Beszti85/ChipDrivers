@@ -8,44 +8,92 @@
 #include "main.h"
 #include "flash.h"
 
-uint8_t FLASH_TxBuffer[32u];
-uint8_t FLASH_RxBuffer[32u];
-uint8_t FLASH_Detected = 0u;
-FLASH_W25_Type_e FLASH_Type = FLASH_UNKNOWN;
+#define CMD_WRITE_STATUS1  0x01u
+#define CMD_WRITE          0x02u
+#define CMD_READ           0x03u
+#define CMD_WRITE_DISABLE  0x04u
+#define CMD_READ_STATUS1   0x05u
+#define CMD_WRITE_ENABLE   0x06u
+#define CMD_CHIP_ERASE     0x07u
+#define CMD_JEDEC_ID       0x9Fu
 
-extern SPI_HandleTypeDef hspi1;
+#define BUSY               0x01u
 
-void FLASH_Identification( void )
+static void BusyWait( FLASH_Handler_t* ptrHandler );
+
+void FLASH_Identification( FLASH_Handler_t* ptrHandler )
 {
   // Read Jedec ID
-  FLASH_TxBuffer[0] = 0x9Fu;
-  HAL_GPIO_WritePin(CS_FLASH_GPIO_Port, CS_FLASH_Pin, GPIO_PIN_RESET);
-  HAL_SPI_TransmitReceive(&hspi1, FLASH_TxBuffer, FLASH_RxBuffer, 4u, 100u);
-  HAL_GPIO_WritePin(CS_FLASH_GPIO_Port, CS_FLASH_Pin, GPIO_PIN_SET);
+  ptrHandler->TxBuffer[0] = CMD_JEDEC_ID;
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+  HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, 4u, 100u);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
   // Check Manufacturing ID
-  if( (FLASH_RxBuffer[1u] == 0xEFu) && (FLASH_RxBuffer[2u] == 0x40u) )
+  if( (ptrHandler->RxBuffer[1u] == 0xEFu) && (ptrHandler->RxBuffer[2u] == 0x40u) )
   {
-    FLASH_Detected = 1u;
     // Winbond flash
-    if( FLASH_RxBuffer[3u] == 0x16u )
+    if( ptrHandler->RxBuffer[3u] == 0x16u )
     {
-      FLASH_Type = W25Q32JV_IQ;
+      ptrHandler->DetectedFlash = W25Q32JV_IQ;
     }
     else
-    if( FLASH_RxBuffer[3u] == 0x17u )
+    if( ptrHandler->RxBuffer[3u] == 0x17u )
     {
-      FLASH_Type = W25Q64_M;
+      ptrHandler->DetectedFlash = W25Q64_M;
     }
   }
 }
 
+void FLASH_Read( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t * const ptrTarget, uint16_t length )
+{
+  uint16_t count = 0u;
+  // Valid source input
+  if(   (ptrTarget != NULL)
+     && (flashAddress < ptrHandler->EndAddress)
+     && (length != 0u) )
+  {
+    // prevent flash overflow
+    count = length;
+    if( flashAddress + length > ptrHandler->EndAddress )
+    {
+      count = (uint16_t)(ptrHandler->EndAddress - flashAddress);
+    }
+    // Send command and read response
+    ptrHandler->TxBuffer[0u] = CMD_READ;
+    ptrHandler->TxBuffer[1u] = (uint8_t)(flashAddress >> 16u);
+    ptrHandler->TxBuffer[2u] = (uint8_t)(flashAddress >> 8u);
+    ptrHandler->TxBuffer[3u] = (uint8_t)(flashAddress);
 
-void FLASH_Read( void )
+    HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+    HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrTarget, count+4u, 100u);
+    HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
+  }
+}
+
+void FLASH_Write( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t const * const ptrSource, uint16_t length )
 {
 
 }
 
-void FLASH_Write( void )
+void FLASH_Erase( FLASH_Handler_t* ptrHandler )
 {
+  ptrHandler->TxBuffer[0u] = CMD_CHIP_ERASE;
 
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, 1u, 100u);
+  HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
+
+  BusyWait(ptrHandler);
+}
+
+static void BusyWait( FLASH_Handler_t* ptrHandler )
+{
+  ptrHandler->TxBuffer[0] = CMD_READ_STATUS1;
+
+  do
+  {
+    HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+    HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, 1u, 100u);
+    HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
+  } while( (ptrHandler->RxBuffer[0] & BUSY) == BUSY );
 }

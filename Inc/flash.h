@@ -12,6 +12,18 @@ typedef enum
   W25Q32JV_IQ,
   W25Q32JV_IM,
   NUM_SUPPORTED_DEVICES
-} FLASH_W25_Type_e;
+} FLASH_Type_e;
 
-void FLASH_Identification( void );
+typedef struct
+{
+  SPI_HandleTypeDef*  ptrHSpi;
+  GPIO_TypeDef*       portCS;
+  uint16_t            pinCS;
+  FLASH_Type_e        DetectedFlash;
+  uint32_t            EndAddress;
+  uint8_t             TxBuffer[8u];
+  uint8_t             RxBuffer[8u];
+} FLASH_Handler_t;
+
+void FLASH_Identification( FLASH_Handler_t* ptrHandler );
+void FLASH_Read( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t * const ptrTarget, uint16_t length );
