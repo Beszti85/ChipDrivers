@@ -9,7 +9,7 @@
 
 char EspAtBuffer[120u];
 
-void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
+void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer, char* ssid, char* pwd)
 {
 #if 0
   // Init ESP01
@@ -29,13 +29,18 @@ void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
   strncpy(EspAtBuffer, "AT+GMR\r\n", 8u);
   HAL_UART_Transmit( ptrUart, EspAtBuffer, 8u, 100u);
   HAL_UART_Receive( ptrUart, ptrBuffer, 200u, 5000u);
-#if 0
   HAL_Delay(100u);
   strncpy(EspAtBuffer, "AT+CWSTATE?\r\n", 13u);
   HAL_UART_Transmit( ptrUart, EspAtBuffer, 13u, 100u);
   HAL_UART_Receive( ptrUart, ptrBuffer, 100u, 2000u);
   HAL_Delay(100u);
-#endif
+  strncpy(EspAtBuffer, "AT+CWMODE=3\r\n", 13u);
+  HAL_UART_Transmit( ptrUart, EspAtBuffer, 13u, 100u);
+  HAL_UART_Receive( ptrUart, ptrBuffer, 50u, 2000u);
+  HAL_Delay(100u);
+  strncpy(EspAtBuffer, "AT+CWJAP=\"%ssid\",\"%pwd\"\r\n", 50u);
+  HAL_UART_Transmit( ptrUart, EspAtBuffer, 50u, 100u);
+  HAL_UART_Receive( ptrUart, ptrBuffer, 50u, 2000u);
 }
 
 void ESP8266_AtReportHandler( char* ptrReport )
