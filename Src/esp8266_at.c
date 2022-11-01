@@ -9,7 +9,7 @@
 
 char EspAtBuffer[120u];
 
-void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer, char* ssid, char* pwd)
+void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
 {
 #if 0
   // Init ESP01
@@ -38,7 +38,7 @@ void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer, char* ssid, 
   HAL_UART_Transmit( ptrUart, EspAtBuffer, 13u, 100u);
   HAL_UART_Receive( ptrUart, ptrBuffer, 50u, 2000u);
   HAL_Delay(100u);
-  strncpy(EspAtBuffer, "AT+CWJAP=\"%ssid\",\"%pwd\"\r\n", 50u);
+  strncpy(EspAtBuffer, "AT+CWJAP=\"\",\"\"\r\n", 50u);
   HAL_UART_Transmit( ptrUart, EspAtBuffer, 50u, 100u);
   HAL_UART_Receive( ptrUart, ptrBuffer, 50u, 2000u);
 }
