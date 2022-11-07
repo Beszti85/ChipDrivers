@@ -10,9 +10,11 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 #include "main.h"
 
 void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer);
+void ESP8266_AtReportHandler( char* ptrReport );
 
 
 #endif /* INC_ESP8266_AT_H_ */
