@@ -39,7 +39,6 @@
 #define LCD_PORT_CLEAR 0xC0
 #define LCD_DATA_HIGH  0x0F
 #endif
-/*
 
 
 /************************************************************/

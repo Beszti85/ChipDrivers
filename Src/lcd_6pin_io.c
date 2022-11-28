@@ -79,23 +79,6 @@ void LcdWrite(uint8_t data, uint8_t rs)
 	DELAY_MS(1);
 }
 
-
-/***********************************************
-*
-* LCD clear screen
-*
-***********************************************/
-
-void LcdClrScr(void)
-{
-    LcdWrite(0x01, 0);
-}
-
-
-
-
-
-
 /***********************************************
 *
 * LCD initialisation
@@ -110,7 +93,7 @@ void LcdClrScr(void)
 *
 ***********************************************/
 
-void LcdInit(uint8_t dispMode)
+void LcdPortInit_GPIO(void)
 {
 	LCD_PORT_0();
 	DELAY_MS(100);
@@ -135,16 +118,6 @@ void LcdInit(uint8_t dispMode)
 	LcdToggleE();
 	
 	DELAY_MS(5);
-	
-	LcdWrite(LCD_FUNCTION_DEFAULT, 0);
-	
-	DELAY_MS(5);
-	
-	LcdWrite(LCD_DISP_OFF, 0);
-	
-	LcdClrScr();
-	
-	LcdWrite(dispMode, 0);
 }
 
 static void ClearPort(void)

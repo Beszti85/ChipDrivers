@@ -12,7 +12,7 @@
 ************************************************/
 
 void LcdToggle(void);
-void LcdInit(uint8_t dispMode);
+void LcdPortInit_GPIO(void);
 void LcdWrite(uint8_t data, uint8_t rs);
 
 #endif
