@@ -1,21 +1,21 @@
 /*
- * lcd_6pin_mcp23s17.c
+ * lcd_6pin_pcf8574.c
  *
- *  Created on: 2022. júl. 30.
+ *  Created on: 2022. nov. 30.
  *      Author: drCsabesz
  */
 
-#include "lcd_6pin_mcp23s17.h"
-#include "mcp23s17.h"
+#include "lcd_6pin_pcf8574.h"
+#include "pcf8574.h"
 
-#define PIN_D7 0u
-#define PIN_D6 1u
-#define PIN_D5 2u
-#define PIN_D4 3u
-#define PIN_E  4u
-#define PIN_RS 5u
+#define PIN_D7 7u
+#define PIN_D6 6u
+#define PIN_D5 5u
+#define PIN_D4 4u
+#define PIN_E  2u
+#define PIN_RS 3u
 
-static MCP23S17_Handler_t SpiHandler;
+static PCF8574_Handler_t ChipHandler;
 
 /********************************************
 * Character LCD driver library
@@ -33,11 +33,12 @@ static void LcdToggleE(void);
 ************************************************/
 static void LcdToggleE(void)
 {
-  MCP23S17_WritePinA(&SpiHandler, PIN_E, 1);
+  PCF8574_WritePin(&ChipHandler, PIN_E, 1);
   DELAY_MS(1);
-  MCP23S17_WritePinA(&SpiHandler, PIN_E, 0);
+  PCF8574_WritePin(&ChipHandler, PIN_E, 0);
   DELAY_MS(1);
 }
+
 
 /***********************************************
 *
@@ -50,11 +51,11 @@ void LcdWrite(uint8_t data, uint8_t rs)
 
   if (rs == 1)
   {
-    MCP23S17_WritePinA(&SpiHandler, PIN_RS, 1);
+    PCF8574_WritePin(&ChipHandler, PIN_RS, 1);
   }
   else
   {
-    MCP23S17_WritePinA(&SpiHandler, PIN_RS, 0);
+    PCF8574_WritePin(&ChipHandler, PIN_RS, 0);
   }
   // set data port value
   if (data & 0x80)
@@ -102,6 +103,7 @@ void LcdWrite(uint8_t data, uint8_t rs)
   DELAY_MS(1);
 }
 
+
 /***********************************************
 *
 * LCD Port initialisation
@@ -116,20 +118,17 @@ void LcdWrite(uint8_t data, uint8_t rs)
 *
 ***********************************************/
 
-void LcdPortInit_MCP23S17( SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort, uint16_t gpioPin  )
+void LcdPortInit_PCF8574( I2C_HandleTypeDef* ptrI2c, uint8_t address )
 {
-  SpiHandler.ptrHSpi = ptrSpi;
-  SpiHandler.portCS  = ptrGpioPort;
-  SpiHandler.pinCS   = gpioPin;
+  ChipHandler.ptrHI2c = ptrI2c;
+  ChipHandler.Address = address;
 
-  MCP23S17_Init(&SpiHandler);
-  MCP23S17_SetIODirectionAB(&SpiHandler, 0u, 0u);
-  MCP23S17_WritePortAB(&SpiHandler, 0xC0u, 0xFFu);
+  PCF8574_WritePort(&ChipHandler, 0x00u);
 
   DELAY_MS(100);
 
   // Write D4-D5 1
-  WrieDataPins(0x0Cu);
+  WrieDataPins(0x30u);
 
   LcdToggleE();
 
@@ -144,7 +143,7 @@ void LcdPortInit_MCP23S17( SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort,
   DELAY_MS(1);
 
   // Write D5 1
-  WrieDataPins(0x04u);
+  WrieDataPins(0x20u);
 
   LcdToggleE();
 
@@ -155,23 +154,22 @@ static void ClearPort(void)
 {
   uint8_t portValue = 0u;
   // read data port
-  portValue = MCP23S17_ReadPortA(&SpiHandler);
+  portValue = PCF8574_ReadPort(&ChipHandler);
   // clear port bits
-  portValue &= 0xC0u;
+  portValue &= 0x03u;
   // write dat port
-  MCP23S17_WritePortA(&SpiHandler, portValue);
+  PCF8574_WritePort(&ChipHandler, portValue);
 }
 
 static void WrieDataPins(uint8_t data)
 {
   uint8_t portValue = 0u;
   // read data port
-  portValue = MCP23S17_ReadPortA(&SpiHandler);
+  portValue = PCF8574_ReadPort(&ChipHandler);
   // clear data bits
-  data &= 0x0Fu;
-  portValue &= 0xF0u;
+  data &= 0xF0u;
+  portValue &= 0x0Fu;
   portValue |= data;
   // write dat port
-  MCP23S17_WritePortA(&SpiHandler, portValue);
+  PCF8574_WritePort(&ChipHandler, portValue);
 }
-

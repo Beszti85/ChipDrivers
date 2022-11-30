@@ -76,8 +76,9 @@
  * Definitions for Display Size
  * Change these definitions to adapt setting to your display
  */
-#define LCD_LINES           4     /**< number of visible lines of the display */
-#define LCD_DISP_LENGTH    20     /**< visibles characters per line of the display */
+// Size definition moved to pre-include header file
+//#define LCD_LINES           4     /**< number of visible lines of the display */
+//#define LCD_DISP_LENGTH    20     /**< visibles characters per line of the display */
 #define LCD_LINE_LENGTH  0x40     /**< internal line length of the display    */
 #define LCD_START_LINE1  0x00     /**< DDRAM address of first char of line 1 */
 #define LCD_START_LINE2  0x40     /**< DDRAM address of first char of line 2 */
@@ -93,6 +94,7 @@
 
 void LcdInit_GPIO(uint8_t dispMode);
 void LcdInit_MSP23S17(uint8_t dispMode, SPI_HandleTypeDef* ptrSpi, GPIO_TypeDef* ptrGpioPort, uint16_t gpioPin);
+void LcdInit_PCF8574(uint8_t dispMode, I2C_HandleTypeDef* ptrHI2c, uint8_t chipAddress);
 void LcdClrScr(void);
 #if (LCD_LINES == 1)
 void LcdPuts(const char *s, uint8_t pos);

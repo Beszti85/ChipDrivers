@@ -8,31 +8,30 @@
 #include "main.h"
 #include "pcf8574.h"
 
-#define PCF8574_ADDR  0x76u
-
-extern I2C_HandleTypeDef hi2c1;
-
 static uint8_t Pcf8574IoVal = 0u;
 
-uint8_t PCF8574_ReadPort( void )
+uint8_t PCF8574_ReadPort( PCF8574_Handler_t* ptrHandler )
 {
-  HAL_I2C_Master_Receive(&hi2c1, PCF8574_ADDR, &Pcf8574IoVal, 1u, 100u);
+  uint8_t addrValue = ptrHandler->Address | 0x01u;
+
+  HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, addrValue, &Pcf8574IoVal, 1u, 100u);
 
   return Pcf8574IoVal;
 }
 
-void PCF8574_WritePort( uint8_t value )
+void PCF8574_WritePort( PCF8574_Handler_t* ptrHandler, uint8_t value )
 {
   Pcf8574IoVal = value;
 
-  HAL_I2C_Master_Transmit(&hi2c1, PCF8574_ADDR, &Pcf8574IoVal, 1u, 100u);
+  HAL_I2C_Master_Transmit(ptrHandler->ptrHI2c, ptrHandler->Address, &Pcf8574IoVal, 1u, 100u);
 }
 
-bool PCF8574_ReadPin( uint8_t pin )
+bool PCF8574_ReadPin( PCF8574_Handler_t* ptrHandler, uint8_t pin )
 {
   bool retval = false;
+  uint8_t addrValue = ptrHandler->Address | 0x01u;
 
-  HAL_I2C_Master_Receive(&hi2c1, PCF8574_ADDR, &Pcf8574IoVal, 1u, 100u);
+  HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, addrValue, &Pcf8574IoVal, 1u, 100u);
 
   if( Pcf8574IoVal & (1 << pin) )
   {
@@ -42,10 +41,11 @@ bool PCF8574_ReadPin( uint8_t pin )
   return retval;
 }
 
-void PCF8574_WritePin( uint8_t pin, uint8_t value )
+void PCF8574_WritePin( PCF8574_Handler_t* ptrHandler, uint8_t pin, uint8_t value )
 {
+  uint8_t addrValue = ptrHandler->Address | 0x01u;
   // Read actual value
-  HAL_I2C_Master_Receive(&hi2c1, PCF8574_ADDR, &Pcf8574IoVal, 1u, 100u);
+  HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, addrValue, &Pcf8574IoVal, 1u, 100u);
   // Set it
   if( value == 0u )
   {
@@ -56,5 +56,5 @@ void PCF8574_WritePin( uint8_t pin, uint8_t value )
     Pcf8574IoVal |= (1 << pin);
   }
 
-  HAL_I2C_Master_Transmit(&hi2c1, PCF8574_ADDR, &Pcf8574IoVal, 1u, 100u);
+  HAL_I2C_Master_Transmit(ptrHandler->ptrHI2c, ptrHandler->Address, &Pcf8574IoVal, 1u, 100u);
 }
