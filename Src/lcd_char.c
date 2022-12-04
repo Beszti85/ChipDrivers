@@ -7,6 +7,7 @@
 #include "lcd_char.h"
 #include "lcd_6pin_io.h"
 #include "lcd_6pin_mcp23s17.h"
+#include "lcd_6pin_pcf8574.h"
 
 /***********************************************
 *
