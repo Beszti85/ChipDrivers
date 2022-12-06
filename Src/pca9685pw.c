@@ -1,19 +1,19 @@
 /*
- * leddrv_pca9685pw.c
+ * pca9685pw.c
  *
  *  Created on: 2022. jún. 2.
  *      Author: drCsabesz
  */
 
 #include "main.h"
-#include "leddrv_pca9685pw.h"
+#include "pca9685pw.h"
 
 static uint8_t PCA9685_RxBuffer[32u];
 static uint8_t PCA9685_TxBuffer[32u];
 
 #define LEDDRV_ADDR 0x80u
 
-void LEDDRV_PCA9685_ReadModeRegs( void )
+void PCA9685_ReadModeRegs( void )
 {
   HAL_GPIO_WritePin(PCA9685_OE_GPIO_Port, PCA9685_OE_Pin, GPIO_PIN_RESET);
   // Set mode register auto increment
