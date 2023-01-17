@@ -8,8 +8,25 @@
 #ifndef INC_PCA9685PW_H_
 #define INC_PCA9685PW_H_
 
-extern I2C_HandleTypeDef hi2c1;
+typedef struct
+{
+  I2C_HandleTypeDef* ptrHI2c;
+  GPIO_TypeDef* portOE;
+  uint16_t pinOE;
+  uint8_t Address;
+  uint8_t Available;
+  uint8_t TxBuffer[24u];
+  uint8_t RxBuffer[24u];
+} PCA9685_Handler_t;
 
-void PCA9685_ReadModeRegs( void );
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void PCA9685_ReadModeRegs( PCA9685_Handler_t* ptrHandler );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_PCA9685PW_H_ */

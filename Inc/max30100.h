@@ -11,6 +11,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void MAX30100_Init( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_MAX30100_H_ */

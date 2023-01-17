@@ -23,6 +23,10 @@ typedef struct
   uint8_t Padding[3u];
 } MCP23S17_Handler_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void MCP23S17_Init( MCP23S17_Handler_t* ptrHandler );
 void MCP23S17_SetIODirectionAB( MCP23S17_Handler_t* ptrHandler, uint8_t portAValue, uint8_t portBValue );
 void MCP23S17_WriteOutputA( MCP23S17_Handler_t* ptrHandler, uint8_t value );
@@ -35,5 +39,9 @@ void MCP23S17_WritePortB( MCP23S17_Handler_t* ptrHandler, uint8_t value );
 void MCP23S17_WritePortAB( MCP23S17_Handler_t* ptrHandler, uint8_t portAValue, uint8_t portBValue );
 void MCP23S17_WritePinA( MCP23S17_Handler_t* ptrHandler, uint8_t pin, uint8_t value );
 void MCP23S17_WritePinB( MCP23S17_Handler_t* ptrHandler, uint8_t pin, uint8_t value );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_MCP23S17_H_ */
