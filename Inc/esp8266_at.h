@@ -13,8 +13,15 @@
 #include <string.h>
 #include "main.h"
 
-void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer);
-void ESP8266_AtReportHandler( char* ptrReport );
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer);
+void ESP8266_AtReportHandler( uint8_t* ptrReport );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_ESP8266_AT_H_ */

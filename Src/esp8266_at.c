@@ -55,7 +55,7 @@ void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
   HAL_UART_Receive( ptrUart, ptrBuffer, 50u, 2000u);
 }
 
-void ESP8266_AtReportHandler( char* ptrReport )
+void ESP8266_AtReportHandler( uint8_t* ptrReport )
 {
 
 }
