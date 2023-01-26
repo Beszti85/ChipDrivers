@@ -19,6 +19,7 @@ extern "C" {
 
 void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer);
 void ESP8266_AtReportHandler( uint8_t* ptrReport );
+void ESP8266_SetOkResponseFlag( bool value );
 
 #ifdef __cplusplus
 }

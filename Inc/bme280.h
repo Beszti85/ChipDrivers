@@ -35,8 +35,16 @@ typedef enum
   Oversampling16
 } BME280_Oversampling_e;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void BME280_Detect( void );
 void BME280_ReadMeasResult( void );
 void BME280_StartMeasurement( BME280_Oversampling_e ovsTemp, BME280_Oversampling_e ovsHum, BME280_Oversampling_e ovsPres );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_BME280_H_ */

@@ -10,6 +10,8 @@
 char EspAtBuffer[120u];
 char ReceivedMessage[120u];
 
+bool EspRespOk = false;
+
 char EspAtMessages[30u][20u] =
 {
   "ready",
@@ -23,7 +25,7 @@ char EspAtMessages[30u][20u] =
 
 void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
 {
-#if 0
+#if 1
   // Init ESP01
   strncpy(EspAtBuffer, "AT+RST\r\n", 8);
   HAL_UART_Transmit( ptrUart, EspAtBuffer, 8u, 100u);
@@ -50,7 +52,7 @@ void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
   HAL_UART_Transmit( ptrUart, EspAtBuffer, 13u, 100u);
   HAL_UART_Receive( ptrUart, ptrBuffer, 50u, 2000u);
   HAL_Delay(100u);
-  strncpy(EspAtBuffer, "AT+CWJAP=\"\",\"\"\r\n", 50);
+  strncpy(EspAtBuffer, "AT+CWJAP=\" \",\" \"\r\n", 50);
   HAL_UART_Transmit( ptrUart, EspAtBuffer, 50u, 100u);
   HAL_UART_Receive( ptrUart, ptrBuffer, 50u, 2000u);
 }
@@ -58,4 +60,9 @@ void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
 void ESP8266_AtReportHandler( uint8_t* ptrReport )
 {
 
+}
+
+void ESP8266_SetOkResponseFlag( bool value )
+{
+  EspRespOk = value;
 }
