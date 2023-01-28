@@ -24,6 +24,7 @@ extern "C" {
 #endif
 
 void PCA9685_ReadModeRegs( PCA9685_Handler_t* ptrHandler );
+void PCA9685_ToggleOutputEnable( PCA9685_Handler_t* ptrHandler );
 
 #ifdef __cplusplus
 }
