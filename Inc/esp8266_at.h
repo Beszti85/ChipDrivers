@@ -13,6 +13,34 @@
 #include <string.h>
 #include "main.h"
 
+typedef struct
+{
+  unsigned int Ready             : 1;
+  unsigned int Busy              : 1;
+  unsigned int Error             : 1;
+  unsigned int Wifi_Connected    : 1;
+  unsigned int Wifi_Got_Ip       : 1;
+  unsigned int Wifi_Got_Ipv6_LL  : 1;
+  unsigned int Wifi_Got_Ipv6_GL  : 1;
+  unsigned int Wifi_Disconnected : 1;
+} ESP8266_StatusBits_t;
+
+typedef union
+{
+  ESP8266_StatusBits_t StatusBits;
+  uint8_t EspFlagsUnion;
+
+} ESP8266_Status_u;
+
+typedef struct
+{
+  char*     ReportMsg;
+  void*     ptrCallback;
+  uint8_t   statusSet;
+  uint8_t   statusClear;
+  uint16_t  timeout;
+} ESP8266_AtReportTable_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
