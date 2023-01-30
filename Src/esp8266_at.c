@@ -28,8 +28,11 @@ char EspAtMessages[30u][20u] =
 
 ESP8266_AtReportTable_t EspAtReportTable[] =
 {
-  { "ready",     NULL, 0x01u, 0xFBu, TIMEOUT_MAX },
-  { "busy p...", NULL, 0x02u, 0xFDu, TIMEOUT_MAX },
+  { "ready",             NULL, 0x01u, 0xFBu, TIMEOUT_MAX },
+  { "busy p...",         NULL, 0x02u, 0xFDu, TIMEOUT_MAX },
+  { "WIFI CONNECTED",    NULL, 0x08u, 0xF7u, TIMEOUT_MAX },
+  { "WIFI GOT IP",       NULL, 0x10u, 0xDFu, TIMEOUT_MAX },
+  { "WIFI DISCONNECTED", NULL, 0x80u, 0x7Fu, TIMEOUT_MAX },
 };
 
 const uint8_t EspGetAtTableSize = (uint8_t)( sizeof(EspAtReportTable) / sizeof(EspAtReportTable[0] ) );
@@ -75,7 +78,8 @@ void ESP8266_AtReportHandler( uint8_t* ptrReport )
   {
     if( !strcmp( EspAtReportTable[index].ReportMsg, ptrReport ) )
     {
-      EspStatusFlags.EspFlagsUnion &= EspAtReportTable[index].statusClear;
+      https://itron.referrals.selectminds.com/jobs/firmware-engineer-5437
+
       EspStatusFlags.EspFlagsUnion |= EspAtReportTable[index].statusSet;
       break;
     }
