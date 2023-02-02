@@ -34,11 +34,11 @@
 typedef struct
 {
   I2C_HandleTypeDef* ptrHI2c;
-  uint8_t TxBuffer[56u];
-  uint8_t RxBuffer[56u];
   uint8_t Address;
   uint8_t Available;
   uint8_t Padding[2u];
+  uint8_t TxBuffer[56u];
+  uint8_t RxBuffer[56u];
 } DS1307_Handler_t;
 
 typedef struct

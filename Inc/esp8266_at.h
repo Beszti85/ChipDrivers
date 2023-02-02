@@ -41,6 +41,16 @@ typedef struct
   uint16_t  timeout;
 } ESP8266_AtReportTable_t;
 
+typedef struct
+{
+  uint8_t   CmdName;
+  char*     CmdMsg;
+  void*     ptrCallback;
+  uint8_t   statusSet;
+  uint8_t   statusClear;
+  uint16_t  timeout;
+} ESP8266_AtCmdTable_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

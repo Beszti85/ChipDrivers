@@ -47,7 +47,7 @@ void DS1307_Read_Date ( DS1307_Handler_t* ptrHandler, uint8_t *day, uint8_t *dat
 {
 	ptrHandler->TxBuffer[0u] = REG_DAY;
 	HAL_I2C_Master_Transmit(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->TxBuffer, 1u, 100u);
-	HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->TxBuffer, 4u, 100u);
+	HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->RxBuffer, 4u, 100u);
 
 	*day = ptrHandler->RxBuffer[0u];
 	*date = ptrHandler->RxBuffer[1u];
@@ -59,7 +59,7 @@ void DS1307_Read_Time ( DS1307_Handler_t* ptrHandler, uint8_t *sec, uint8_t *min
 {
   ptrHandler->TxBuffer[0u] = REG_SECONDS;
   HAL_I2C_Master_Transmit(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->TxBuffer, 1u, 100u);
-  HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->TxBuffer, 3u, 100u);
+  HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->RxBuffer, 3u, 100u);
 
   *sec = ptrHandler->RxBuffer[0u];
   *min = ptrHandler->RxBuffer[1u];
@@ -107,7 +107,7 @@ uint8_t DS1307_ROM_ReadByte( DS1307_Handler_t* ptrHandler, uint8_t address )
 {
   ptrHandler->TxBuffer[0u] = address;
   HAL_I2C_Master_Transmit(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->TxBuffer, 1u, 100u);
-  HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->TxBuffer, 1u, 100u);
+  HAL_I2C_Master_Receive(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->RxBuffer, 1u, 100u);
 
   return ptrHandler->RxBuffer[0u];
 }
