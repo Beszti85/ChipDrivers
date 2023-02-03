@@ -35,6 +35,16 @@ ESP8266_AtReportTable_t EspAtReportTable[] =
   { "WIFI DISCONNECTED", NULL, 0x80u, 0x7Fu, TIMEOUT_MAX },
 };
 
+ESP8266_AtCmdTable_t EspAtCmdTable[] =
+{
+  { ESP8266_CMD_ID_RST,           "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_TST,        "AT\r\n",                 NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_VERSION,       "AT+GMR\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_CMD_LIST,   "AT+CMD?\r\n",            NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_DEEP_SLEEP,    "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_RST,           "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+};
+
 const uint8_t EspGetAtTableSize = (uint8_t)( sizeof(EspAtReportTable) / sizeof(EspAtReportTable[0] ) );
 
 void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)

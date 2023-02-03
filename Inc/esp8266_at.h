@@ -32,6 +32,17 @@ typedef union
 
 } ESP8266_Status_u;
 
+typedef enum
+{
+  ESP8266_CMD_ID_NONE         = (0),
+  ESP8266_CMD_ID_RST          = (1),
+  ESP8266_CMD_ID_AT_TEST      = (2),
+  ESP8266_CMD_ID_VERSION      = (3),
+  ESP8266_CMD_ID_AT_CMD_LIST  = (4),
+  ESP8266_CMD_ID_DEEP_SLEEP   = (5,)
+
+} ESP8266_CMD_ID;
+
 typedef struct
 {
   char*     ReportMsg;
@@ -43,12 +54,15 @@ typedef struct
 
 typedef struct
 {
-  uint8_t   CmdName;
-  char*     CmdMsg;
-  void*     ptrCallback;
-  uint8_t   statusSet;
-  uint8_t   statusClear;
-  uint16_t  timeout;
+  ESP8266_CMD_ID    CmdName;
+  char*             AtCmd;
+  void*             CmdHandler;
+  char*             AtPrimResp;
+  void*             PrimRespHandler;
+  char*             ErrorResp;
+  void*             ErrorRespHandler;
+  uint32_t          Timeout;
+  void*             TimeoutHandler;
 } ESP8266_AtCmdTable_t;
 
 #ifdef __cplusplus
