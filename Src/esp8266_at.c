@@ -37,12 +37,16 @@ ESP8266_AtReportTable_t EspAtReportTable[] =
 
 ESP8266_AtCmdTable_t EspAtCmdTable[] =
 {
-  { ESP8266_CMD_ID_RST,           "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_AT_TST,        "AT\r\n",                 NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_VERSION,       "AT+GMR\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_AT_CMD_LIST,   "AT+CMD?\r\n",            NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_DEEP_SLEEP,    "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_RST,           "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_RST,             "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_TST,          "AT\r\n",                 NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_VERSION,         "AT+GMR\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_CMD_LIST,     "AT+CMD?\r\n",            NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_DEEP_SLEEP,      "AT+GSLP=\r\n",           NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_ECHO_ON,      "ATE1\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_ECHO_OFF,     "ATE0\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_RESTORE_DEF,     "AT+RESTORE\r\n",         NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_UART_CONF_TEMP,  "AT+UART_CUR?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_UART_CONF_PERM,  "AT+UART_DEF?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
 };
 
 const uint8_t EspGetAtTableSize = (uint8_t)( sizeof(EspAtReportTable) / sizeof(EspAtReportTable[0] ) );
