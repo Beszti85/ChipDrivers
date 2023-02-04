@@ -59,8 +59,6 @@ typedef enum
   ESP8266_CMD_ID_GET_RF_TX_POWER       = (22),
   ESP8266_CMD_ID_SET_RF_TX_POWER       = (23),
   ESP8266_CMD_ID_ROLLBACK_PREV_FW      = (24),
-  ESP8266_CMD_ID_SYS_PROMPT     = (22),
-  ESP8266_CMD_ID_SYS_PROMPT     = (23),
 } ESP8266_CMD_ID;
 
 typedef struct
@@ -85,11 +83,17 @@ typedef struct
   void*             TimeoutHandler;
 } ESP8266_AtCmdTable_t;
 
+typedef struct
+{
+
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer);
+void ESP8266_ProcessAtCmd( UART_HandleTypeDef* ptrUart, ESP8266_CMD_ID cmdId );
 void ESP8266_AtReportHandler( uint8_t* ptrReport );
 void ESP8266_SetOkResponseFlag( bool value );
 
