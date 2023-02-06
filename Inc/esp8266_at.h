@@ -83,11 +83,6 @@ typedef struct
   void*             TimeoutHandler;
 } ESP8266_AtCmdTable_t;
 
-typedef struct
-{
-
-};
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -95,7 +90,9 @@ extern "C" {
 void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer);
 void ESP8266_ProcessAtCmd( UART_HandleTypeDef* ptrUart, ESP8266_CMD_ID cmdId );
 void ESP8266_AtReportHandler( uint8_t* ptrReport );
+void ESP8266_AtResponseHandler( uint8_t* ptrReport );
 void ESP8266_SetOkResponseFlag( bool value );
+ESP8266_CMD_ID ESP8266_GetLastAtCmd( void );
 
 #ifdef __cplusplus
 }

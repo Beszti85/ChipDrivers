@@ -14,7 +14,9 @@ char EspAtBuffer[120u];
 char ReceivedMessage[120u];
 
 bool EspRespOk = false;
+bool EspAtCmdRespOk = false;
 ESP8266_Status_u EspStatusFlags;
+ESP8266_CMD_ID ESP8266_LastAtCmd = ESP8266_CMD_ID_NONE;
 
 char EspAtMessages[30u][20u] =
 {
@@ -37,6 +39,7 @@ ESP8266_AtReportTable_t EspAtReportTable[] =
 
 ESP8266_AtCmdTable_t EspAtCmdTable[] =
 {
+  { ESP8266_CMD_ID_NONE,            " ",                      NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_RST,             "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_AT_TEST,         "AT\r\n",                 NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_VERSION,         "AT+GMR\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
@@ -45,8 +48,8 @@ ESP8266_AtCmdTable_t EspAtCmdTable[] =
   { ESP8266_CMD_ID_AT_ECHO_ON,      "ATE1\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_AT_ECHO_OFF,     "ATE0\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_RESTORE_DEF,     "AT+RESTORE\r\n",         NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_UART_CFG_TEMP,   "AT+UART_CUR?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_UART_CFG_PERM,   "AT+UART_DEF?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_GET_UART_CFG_TEMP,   "AT+UART_CUR?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_GET_UART_CFG_PERM,   "AT+UART_DEF?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
 };
 
 const uint8_t EspGetAtTableSize = (uint8_t)( sizeof(EspAtReportTable) / sizeof(EspAtReportTable[0] ) );
@@ -88,7 +91,9 @@ void ESP8266_Init(UART_HandleTypeDef* ptrUart, uint8_t * ptrBuffer)
 void ESP8266_ProcessAtCmd( UART_HandleTypeDef* ptrUart, ESP8266_CMD_ID cmdId )
 {
   // Issue DMA transfer
-  HAL_UART_Transmit_DMA( ptrUart, &EspAtCmdTable[cmdId].AtCmd, sizeof(EspAtCmdTable[cmdId].AtCmd) );
+  ESP8266_LastAtCmd = cmdId;
+  ESP8266_AtCmdTable_t* ptrCmd = &EspAtCmdTable[cmdId];
+  HAL_UART_Transmit_DMA( ptrUart, ptrCmd->AtCmd, strlen(EspAtCmdTable[cmdId].AtCmd) );
 }
 
 void ESP8266_AtReportHandler( uint8_t* ptrReport )
@@ -103,6 +108,26 @@ void ESP8266_AtReportHandler( uint8_t* ptrReport )
       break;
     }
   }
+}
+
+void ESP8266_AtResponseHandler( uint8_t* ptrReport )
+{
+  // Compare the response with the expected one
+  if( !strncmp(EspAtCmdTable[ESP8266_LastAtCmd].AtPrimResp, ptrReport, sizeof(EspAtCmdTable[ESP8266_LastAtCmd].AtPrimResp) ) )
+  {
+    // Command response ok
+    EspAtCmdRespOk = true;
+  }
+  else
+  {
+    // Set error
+    EspAtCmdRespOk = false;
+  }
+}
+
+ESP8266_CMD_ID ESP8266_GetLastAtCmd( void )
+{
+  return ESP8266_LastAtCmd;
 }
 
 void ESP8266_SetOkResponseFlag( bool value )
