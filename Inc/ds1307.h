@@ -71,6 +71,7 @@ void DS1307_Read_Date( DS1307_Handler_t* ptrHandler, uint8_t *day, uint8_t *date
 void DS1307_Read_Time( DS1307_Handler_t* ptrHandler, uint8_t *sec, uint8_t *min, uint8_t *hour);
 void DS1307_Convert_Time(char *s, uint8_t hour, uint8_t min, uint8_t sec);
 void DS1307_Convert_Date(char *s, uint8_t year, uint8_t month, uint8_t date);
+uint8_t DS1307_ConvertData( char *ptrBuffer, DS1307_TimeDate_t* ptrDateTime );
 
 void DS1307_ROM_WriteByte( DS1307_Handler_t* ptrHandler, uint8_t address, uint8_t data);
 uint8_t DS1307_ROM_ReadByte( DS1307_Handler_t* ptrHandler, uint8_t address);

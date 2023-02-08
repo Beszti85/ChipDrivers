@@ -63,7 +63,7 @@ void DS1307_Read_Time ( DS1307_Handler_t* ptrHandler, uint8_t *sec, uint8_t *min
 
   *sec = ptrHandler->RxBuffer[0u];
   *min = ptrHandler->RxBuffer[1u];
-  *hour = ptrHandler->RxBuffer[2u];
+  *hour = ptrHandler->RxBuffer[2u] & 0x3Fu;
 }
 
 void DS1307_Convert_Time (char *s, uint8_t hour, uint8_t min, uint8_t sec)
@@ -94,6 +94,51 @@ void DS1307_Convert_Date(char *s, uint8_t year, uint8_t month, uint8_t date)
 	s[8] = ((date >> 4) & 0x03) +'0';
 	s[9] = (date & 0x0F) + '0';
 	s[10] = '\0';
+}
+
+uint8_t DS1307_ConvertData( char *ptrBuffer, DS1307_TimeDate_t* ptrDateTime )
+{
+  *ptrBuffer = '2';
+  ptrBuffer++;
+  *ptrBuffer = '0';
+  ptrBuffer++;
+  *ptrBuffer = ((ptrDateTime->Year >> 4) & 0x0F) + '0';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Year & 0x0F) + '0';
+  ptrBuffer++;
+  *ptrBuffer = '/';
+  ptrBuffer++;
+  *ptrBuffer = ((ptrDateTime->Month >> 4) & 0x01)+'0';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Month & 0x0F) + '0';
+  ptrBuffer++;
+  *ptrBuffer = '/';
+  ptrBuffer++;
+  *ptrBuffer = ((ptrDateTime->Date >> 4) & 0x03) +'0';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Date & 0x0F) + '0';
+  ptrBuffer++;
+  *ptrBuffer = ' ';
+  ptrBuffer++;
+  *ptrBuffer = ((ptrDateTime->Hours >> 4) & 0x03) + '0';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Hours & 0x0F) + '0';
+  ptrBuffer++;
+  *ptrBuffer = ':';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Minutes >> 4) +'0';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Minutes & 0x0F) + '0';
+  ptrBuffer++;
+  *ptrBuffer = ':';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Seconds >> 4) +'0';
+  ptrBuffer++;
+  *ptrBuffer = (ptrDateTime->Seconds & 0x0F) + '0';
+  ptrBuffer++;
+  *ptrBuffer = '\0';
+
+  return 20u;
 }
 
 void DS1307_ROM_WriteByte( DS1307_Handler_t* ptrHandler, uint8_t address, uint8_t data )
