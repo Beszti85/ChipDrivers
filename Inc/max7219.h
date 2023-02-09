@@ -10,6 +10,17 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "main.h"
+
+typedef struct
+{
+  SPI_HandleTypeDef* ptrHSpi;
+  GPIO_TypeDef* portCS;
+  uint16_t pinCS;
+  uint8_t TxBuffer[24u];
+  uint8_t Available;
+  uint8_t Padding[3u];
+} MAX7219_Handler_t;
 
 typedef enum
 {
@@ -57,13 +68,21 @@ typedef enum
   TestOn
 } MAX7219_TestMode_e;
 
-void MAX7219_Init( void );
-void MAX7219_SetMode( MAX7219_Mode_e mode );
-void MAX7219_SetDisplayTestMode( MAX7219_TestMode_e mode );
-void MAX7219_SetIntensity50( void );
-void MAX7219_SetIntensity( uint8_t percentage );
-void MAX7219_SetScanLimit( MAX7219_Digit_e digit );
-void MAX7219_SetDigit( MAX7219_Digit_e digit, uint8_t value );
-void MAX7219_SetAllDigits( const uint8_t* ptrBuffer );
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void MAX7219_Init( MAX7219_Handler_t* ptrHandler );
+void MAX7219_SetMode( MAX7219_Handler_t* ptrHandler, MAX7219_Mode_e mode );
+void MAX7219_SetDisplayTestMode( MAX7219_Handler_t* ptrHandler, MAX7219_TestMode_e mode );
+void MAX7219_SetIntensity50(  MAX7219_Handler_t* ptrHandler, );
+void MAX7219_SetIntensity( MAX7219_Handler_t* ptrHandler, uint8_t percentage );
+void MAX7219_SetScanLimit( MAX7219_Handler_t* ptrHandler, MAX7219_Digit_e digit );
+void MAX7219_SetDigit( MAX7219_Handler_t* ptrHandler, MAX7219_Digit_e digit, uint8_t value );
+void MAX7219_SetAllDigits( MAX7219_Handler_t* ptrHandler, const uint8_t* ptrBuffer );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_MAX7219_H_ */
