@@ -59,6 +59,8 @@ typedef enum
   ESP8266_CMD_ID_GET_RF_TX_POWER       = (22),
   ESP8266_CMD_ID_SET_RF_TX_POWER       = (23),
   ESP8266_CMD_ID_ROLLBACK_PREV_FW      = (24),
+  ESP8266_CMD_ID_GET_TIMESTAMP         = (25),
+  ESP8266_CMD_ID_SET_TIMESTAMP         = (26),
 } ESP8266_CMD_ID;
 
 typedef struct
