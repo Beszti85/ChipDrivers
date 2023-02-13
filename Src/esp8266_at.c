@@ -39,15 +39,23 @@ ESP8266_AtReportTable_t EspAtReportTable[] =
 
 ESP8266_AtCmdTable_t EspAtCmdTable[] =
 {
-  { ESP8266_CMD_ID_NONE,                " ",                      NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_RST,                 "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_AT_TEST,             "AT\r\n",                 NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_VERSION,             "AT+GMR\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_AT_CMD_LIST,         "AT+CMD?\r\n",            NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_DEEP_SLEEP,          "AT+GSLP=\r\n",           NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_AT_ECHO_ON,          "ATE1\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_AT_ECHO_OFF,         "ATE0\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
-  { ESP8266_CMD_ID_RESTORE_DEF,         "AT+RESTORE\r\n",         NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_NONE,                  " ",                      NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_EXE_RST,               "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_TEST,               "AT\r\n",                 NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_VERSION,               "AT+GMR\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_CMD_LIST,           "AT+CMD?\r\n",            NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_DEEP_SLEEP,            "AT+GSLP=\r\n",           NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_ECHO_ON,            "ATE1\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_AT_ECHO_OFF,           "ATE0\r\n",               NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_GET_WIFI_MODE,         "AT+CWMODE?\r\n",         NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_SET_WIFI_MODE,         "AT+CWMODE=\r\n",         NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_GET_WIFI_STATE,        "AT+CWSTATE?\r\n",        NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_GET_WIFI_CONNECTED_AP, "AT+CWJAP?\r\n",          NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_SET_WIFI_CONNECT_AP,   "AT+CWJAP=\r\n",          NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_EXE_WIFI_RECONNECT_AP, "AT+CWJAP\r\n",           NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_EXE_RESTORE_DEF,       "AT+RESTORE\r\n",         NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+
+#ifdef USE_ALL_CMDS
   { ESP8266_CMD_ID_GET_UART_CFG_TEMP,   "AT+UART_CUR?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_SET_UART_CFG_TEMP,   "AT+UART_CUR=\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_GET_UART_CFG_PERM,   "AT+UART_DEF?\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
@@ -63,6 +71,11 @@ ESP8266_AtCmdTable_t EspAtCmdTable[] =
   { ESP8266_CMD_ID_SET_USER_PARTITION,  "AT+SYSFLASH=\r\n",       NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_GET_RF_TX_POWER,     "AT+RFPOWER?\r\n",        NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_SET_RF_TX_POWER,     "AT+RFPOWER=\r\n",        NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_ROLLBACK_PREV_FW,    "AT+SYSROLLBACK\r\n",     NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_GET_TIMESTAMP,       "AT+SYSTIMESTAMP?\r\n",   NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_SET_TIMESTAMP,       "AT+SYSTIMESTAMP=\r\n",   NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+  { ESP8266_CMD_ID_ROLLBACK_PREV_FW,    "AT+SYSROLLBACK\r\n",     NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
+#endif
 };
 
 const uint8_t EspGetAtTableSize = (uint8_t)( sizeof(EspAtReportTable) / sizeof(EspAtReportTable[0] ) );
@@ -106,7 +119,16 @@ void ESP8266_ProcessAtCmd( UART_HandleTypeDef* ptrUart, ESP8266_CMD_ID cmdId )
   // Issue DMA transfer
   ESP8266_LastAtCmd = cmdId;
   ESP8266_AtCmdTable_t* ptrCmd = &EspAtCmdTable[cmdId];
-  HAL_UART_Transmit_DMA( ptrUart, ptrCmd->AtCmd, strlen(EspAtCmdTable[cmdId].AtCmd) );
+  // Command handler function?
+  if( ptrCmd->CmdHandler == NULL )
+  {
+    // No function - basic AT command string to send
+    HAL_UART_Transmit_DMA( ptrUart, ptrCmd->AtCmd, strlen(EspAtCmdTable[cmdId].AtCmd) );
+  }
+  else
+  {
+    // Handle AT command before sending
+  }
 }
 
 void ESP8266_AtReportHandler( uint8_t* ptrReport )
