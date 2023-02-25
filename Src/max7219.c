@@ -112,7 +112,7 @@ void MAX7219_SetIntensity( MAX7219_Handler_t* ptrHandler, uint8_t percentage )
 static void SpiWrite( MAX7219_Handler_t* ptrHandler, uint8_t length )
 {
   HAL_GPIO_WritePin( ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET );
-  HAL_SPI_Transmit( ptrHandler->hspi1, ptrHandler->TxBuffer, length, 100u);
+  HAL_SPI_Transmit( ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u);
   HAL_GPIO_WritePin( ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET );
 }
 

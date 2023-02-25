@@ -37,9 +37,9 @@ typedef enum
 extern "C" {
 #endif
 
-void MCP2515_Init( MCP23S17_Handler_t* ptrHandler );
-void MCP2515_Reset( MCP23S17_Handler_t* ptrHandler );
-void MCP2515_SetMode( MCP23S17_Handler_t* ptrHandler, MCP23S17_OpMode_e opMode );
+void MCP2515_Init( MCP2515_Handler_t* ptrHandler );
+void MCP2515_Reset( MCP2515_Handler_t* ptrHandler );
+void MCP2515_SetMode( MCP2515_Handler_t* ptrHandler, MCP2515_OpMode_e opMode );
 
 #ifdef __cplusplus
 }

@@ -75,7 +75,7 @@ extern "C" {
 void MAX7219_Init( MAX7219_Handler_t* ptrHandler );
 void MAX7219_SetMode( MAX7219_Handler_t* ptrHandler, MAX7219_Mode_e mode );
 void MAX7219_SetDisplayTestMode( MAX7219_Handler_t* ptrHandler, MAX7219_TestMode_e mode );
-void MAX7219_SetIntensity50(  MAX7219_Handler_t* ptrHandler, );
+void MAX7219_SetIntensity50( MAX7219_Handler_t* ptrHandler );
 void MAX7219_SetIntensity( MAX7219_Handler_t* ptrHandler, uint8_t percentage );
 void MAX7219_SetScanLimit( MAX7219_Handler_t* ptrHandler, MAX7219_Digit_e digit );
 void MAX7219_SetDigit( MAX7219_Handler_t* ptrHandler, MAX7219_Digit_e digit, uint8_t value );

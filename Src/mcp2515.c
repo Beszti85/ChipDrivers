@@ -7,8 +7,8 @@
 
 #include "mcp2515.h"
 
-static void SpiWrite( MCP23S17_Handler_t* ptrHandler, uint8_t length );
-static void SpiRead( MCP23S17_Handler_t* ptrHandler, uint8_t length );
+static void SpiWrite( MCP2515_Handler_t* ptrHandler, uint8_t length );
+static void SpiRead( MCP2515_Handler_t* ptrHandler, uint8_t length );
 
 #define CMD_RESET       0xC0u
 #define CMD_READ        0x03u
@@ -22,18 +22,18 @@ static void SpiRead( MCP23S17_Handler_t* ptrHandler, uint8_t length );
 
 #define REG_CANCTRL     0x0Fu
 
-void MCP2515_Init( MCP23S17_Handler_t* ptrHandler )
+void MCP2515_Init( MCP2515_Handler_t* ptrHandler )
 {
   MCP2515_Reset( ptrHandler );
 }
 
-void MCP2515_Reset( MCP23S17_Handler_t* ptrHandler )
+void MCP2515_Reset( MCP2515_Handler_t* ptrHandler )
 {
   ptrHandler->TxBuffer[0u] = CMD_RESET;
   SpiWrite( ptrHandler, 1u );
 }
 
-void MCP2515_SetMode( MCP23S17_Handler_t* ptrHandler, MCP23S17_OpMode_e opMode )
+void MCP2515_SetMode( MCP2515_Handler_t* ptrHandler, MCP2515_OpMode_e opMode )
 {
   ptrHandler->TxBuffer[0u] = CMD_WRITE;
   ptrHandler->TxBuffer[1u] = REG_CANCTRL;
@@ -41,7 +41,7 @@ void MCP2515_SetMode( MCP23S17_Handler_t* ptrHandler, MCP23S17_OpMode_e opMode )
   SpiWrite( ptrHandler, 1u );
 }
 
-static void SpiWrite( MCP23S17_Handler_t* ptrHandler, uint8_t length )
+static void SpiWrite( MCP2515_Handler_t* ptrHandler, uint8_t length )
 {
   // Set write address
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
@@ -49,7 +49,7 @@ static void SpiWrite( MCP23S17_Handler_t* ptrHandler, uint8_t length )
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
 
-static void SpiRead( MCP23S17_Handler_t* ptrHandler, uint8_t length )
+static void SpiRead( MCP2515_Handler_t* ptrHandler, uint8_t length )
 {
   // Set Read address
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
