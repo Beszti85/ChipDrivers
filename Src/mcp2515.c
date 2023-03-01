@@ -41,6 +41,12 @@ void MCP2515_SetMode( MCP2515_Handler_t* ptrHandler, MCP2515_OpMode_e opMode )
   SpiWrite( ptrHandler, 1u );
 }
 
+void MCP2515_ReadStatus( MCP2515_Handler_t* ptrHandler )
+{
+  ptrHandler->TxBuffer[0u] = CMD_READ_STATUS;
+  SpiRead( ptrHandler, 3u );
+}
+
 static void SpiWrite( MCP2515_Handler_t* ptrHandler, uint8_t length )
 {
   // Set write address

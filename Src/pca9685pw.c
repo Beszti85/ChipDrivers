@@ -28,3 +28,4 @@ void PCA9685_ToggleOutputEnable( PCA9685_Handler_t* ptrHandler )
 {
   HAL_GPIO_TogglePin(ptrHandler->portOE, ptrHandler->pinOE);
 }
+
