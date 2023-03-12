@@ -18,7 +18,7 @@ bool EspAtCmdRespOk = false;
 ESP8266_Status_u EspStatusFlags;
 ESP8266_CMD_ID ESP8266_LastAtCmd = ESP8266_CMD_ID_NONE;
 
-char EspAtMessages[30u][20u] =
+const char EspAtMessages[30u][20u] =
 {
   "ready",
   "busy p",
@@ -28,7 +28,7 @@ char EspAtMessages[30u][20u] =
   "WIFI DISCONNECTED"
 };
 
-ESP8266_AtReportTable_t EspAtReportTable[] =
+const ESP8266_AtReportTable_t EspAtReportTable[] =
 {
   { "ready",             NULL, 0x01u, 0xFBu, TIMEOUT_MAX },
   { "busy p...",         NULL, 0x02u, 0xFDu, TIMEOUT_MAX },
@@ -37,7 +37,7 @@ ESP8266_AtReportTable_t EspAtReportTable[] =
   { "WIFI DISCONNECTED", NULL, 0x80u, 0x7Fu, TIMEOUT_MAX },
 };
 
-ESP8266_AtCmdTable_t EspAtCmdTable[] =
+const ESP8266_AtCmdTable_t EspAtCmdTable[] =
 {
   { ESP8266_CMD_ID_NONE,                  " ",                      NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
   { ESP8266_CMD_ID_EXE_RST,               "AT+RST\r\n",             NULL,                "OK",            NULL,          "ERROR",  NULL,   1000u,   NULL },
