@@ -51,7 +51,11 @@ static void SpiWrite( MCP2515_Handler_t* ptrHandler, uint8_t length )
 {
   // Set write address
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+#if (HAL_SPI_DMA == 1)
+  HAL_SPI_Transmit_DMA(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length);
+#else
   HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u);
+#endif
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
 
@@ -59,6 +63,10 @@ static void SpiRead( MCP2515_Handler_t* ptrHandler, uint8_t length )
 {
   // Set Read address
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+#if (HAL_SPI_DMA == 1)
+  HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length);
+#else
   HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length, 100u);
+#endif
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
