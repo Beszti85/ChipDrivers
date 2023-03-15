@@ -64,7 +64,7 @@ static void SpiRead( MCP2515_Handler_t* ptrHandler, uint8_t length )
   // Set Read address
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
 #if (HAL_SPI_DMA == 1)
-  HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length);
+  HAL_SPI_TransmitReceive_DMA(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length);
 #else
   HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length, 100u);
 #endif

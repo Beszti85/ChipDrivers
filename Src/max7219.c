@@ -22,7 +22,7 @@
 #define REGADDR_SHUTDOWN   0x0Cu
 #define REGADDR_DPYTEST    0x0Fu
 
-uint8_t MAX7219_IntensityLimits[16u] = { 4u, 10u, 16u, 22u, 29u, 35u, 41u, 47u, 54u, 60u, 66u, 72u, 79, 85u, 91u, 97u };
+const uint8_t MAX7219_IntensityLimits[16u] = { 4u, 10u, 16u, 22u, 29u, 35u, 41u, 47u, 54u, 60u, 66u, 72u, 79, 85u, 91u, 97u };
 
 static void SpiWrite( MAX7219_Handler_t* ptrHandler, uint8_t length );
 
@@ -112,7 +112,11 @@ void MAX7219_SetIntensity( MAX7219_Handler_t* ptrHandler, uint8_t percentage )
 static void SpiWrite( MAX7219_Handler_t* ptrHandler, uint8_t length )
 {
   HAL_GPIO_WritePin( ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET );
-  HAL_SPI_Transmit( ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u);
+#if (HAL_SPI_DMA == 1)
+  HAL_SPI_Transmit_DMA( ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length );
+#else
+  HAL_SPI_Transmit( ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u );
+#endif
   HAL_GPIO_WritePin( ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET );
 }
 

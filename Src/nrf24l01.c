@@ -169,14 +169,22 @@ void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value )
 static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+#if (HAL_SPI_DMA == 1)
+  HAL_SPI_Transmit_DMA(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length);
+#else
   HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u);
+#endif
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 }
 
 static void SpiRead( NRF24L01_Handler_t* ptrHandler, uint8_t length )
 {
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+#if (HAL_SPI_DMA == 1)
+  HAL_SPI_TransmitReceive_DMA(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length);
+#else
   HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length, 100u);
+#endif
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
   ptrHandler->StatusReg = *(ptrHandler->RxBuffer);
 }
