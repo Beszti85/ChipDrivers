@@ -48,7 +48,7 @@ void MCP23S17_Init( MCP23S17_Handler_t* ptrHandler )
 void MCP23S17_ReadAllRegs( MCP23S17_Handler_t* ptrHandler )
 {
   ptrHandler->TxBuffer[1] = 0x41u;
-  ptrHandler->TxBuffer[3] = 0x00u;
+  ptrHandler->TxBuffer[2] = 0x00u;
   SpiRead( ptrHandler, 23u );
 }
 
@@ -157,8 +157,8 @@ static void SpiWrite( MCP23S17_Handler_t* ptrHandler, uint8_t length )
   HAL_SPI_Transmit_DMA(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length);
 #else
   HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, length, 100u);
-#endif
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
+#endif
 }
 
 static void SpiRead( MCP23S17_Handler_t* ptrHandler, uint8_t length )
@@ -170,6 +170,6 @@ static void SpiRead( MCP23S17_Handler_t* ptrHandler, uint8_t length )
   HAL_SPI_TransmitReceive_DMA(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length);
 #else
   HAL_SPI_TransmitReceive(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, ptrHandler->RxBuffer, length, 100u);
-#endif
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
+#endif
 }
