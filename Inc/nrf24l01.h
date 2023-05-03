@@ -58,6 +58,10 @@ typedef struct
   uint8_t Padding[2u];
 } NRF24L01_Handler_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler );
 uint8_t NRF24L01_ReadRegister1Byte( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId );
 void NRF24L01_WriteRegister1Byte( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId, uint8_t value );
@@ -68,5 +72,9 @@ void NRF24L01_WriteTxPayload( NRF24L01_Handler_t* ptrHandler, uint8_t length );
 void NRF24L01_FlushTx( NRF24L01_Handler_t* ptrHandler );
 void NRF24L01_FlushRx( NRF24L01_Handler_t* ptrHandler );
 void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_NRF24L01_H_ */
