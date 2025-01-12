@@ -101,6 +101,24 @@ void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler )
     }
     mapIndex += CmdParam[i].Size;
   }
+  // Write registers
+  // Config register: 0 - configure later
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_CONFIG, 0);
+  // Acknoledge Enable - no auto acknoledge
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_EN_AA, 0);
+  // Do not enable any data pipe
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_EN_RXADDR, 0);
+  // 5 bytes for TX/RX address
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_SETUP_AW, 0x03u);
+  // No retransmission
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_SETUP_RETR, 0);
+  // Channel setup during RX or TX
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_RF_CH, 0);
+  // RF setup: 0dB power, data rate = 2Mbps
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_RF_SETUP, 0);
+
+  // Enable the chip after config
+  NRF24L01_WriteCE(ptrHandler, 1u);
 }
 
 uint8_t NRF24L01_ReadRegister1Byte( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
