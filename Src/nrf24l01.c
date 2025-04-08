@@ -117,6 +117,13 @@ void NRF24L01_Init( NRF24L01_Handler_t* ptrHandler )
   // RF setup: 0dB power, data rate = 2Mbps
   NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_RF_SETUP, 0);
 
+  // Clear the FIFO's
+  NRF24L01_FlushTx(ptrHandler);
+  NRF24L01_FlushRx(ptrHandler);
+
+  // Clear any pending interrupt flags
+  NRF24L01_ClearIRQFlags(ptrHandler);
+
   // Enable the chip after config
   NRF24L01_WriteCE(ptrHandler, 1u);
 }
@@ -182,6 +189,13 @@ void NRF24L01_FlushRx( NRF24L01_Handler_t* ptrHandler )
 void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value )
 {
   HAL_GPIO_WritePin(ptrHandler->portCE, ptrHandler->pinCE, value);
+}
+
+void NRF24L01_ClearIRQFlags( NRF24L01_Handler_t* ptrHandler )
+{
+  regStatus = NRF24L01_ReadRegister(ptrHandler, NRF24L01_REG_STATUS);
+  regstatus |= NRF24L01_MASK_STATUS_IRQ;
+  NRF24L01_WriteRegister(ptrHandler, NRF24L01_REG_STATUS);
 }
 
 static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length )
