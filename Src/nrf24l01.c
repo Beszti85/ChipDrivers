@@ -193,9 +193,11 @@ void NRF24L01_WriteCE( NRF24L01_Handler_t* ptrHandler, GPIO_PinState value )
 
 void NRF24L01_ClearIRQFlags( NRF24L01_Handler_t* ptrHandler )
 {
-  regStatus = NRF24L01_ReadRegister(ptrHandler, NRF24L01_REG_STATUS);
-  regstatus |= NRF24L01_MASK_STATUS_IRQ;
-  NRF24L01_WriteRegister(ptrHandler, NRF24L01_REG_STATUS);
+  uint8_t regStatus;
+
+  regStatus = NRF24L01_ReadRegister1Byte(ptrHandler, NRF24L01_REG_STATUS);
+  regStatus |= NRF24L01_MASK_STATUS_IRQ;
+  NRF24L01_WriteRegister1Byte(ptrHandler, NRF24L01_REG_STATUS, regStatus);
 }
 
 static void SpiWrite( NRF24L01_Handler_t* ptrHandler, uint8_t length )
