@@ -35,11 +35,13 @@ void FLASH_Identification( FLASH_Handler_t* ptrHandler )
     if( ptrHandler->RxBuffer[3u] == 0x16u )
     {
       ptrHandler->DetectedFlash = W25Q32JV_IQ;
+      ptrHandler->EndAddress    = 0x003FFFFFu;
     }
     else
     if( ptrHandler->RxBuffer[3u] == 0x17u )
     {
       ptrHandler->DetectedFlash = W25Q64_M;
+      ptrHandler->EndAddress    = 0x007FFFFFu;
     }
   }
 }
@@ -49,7 +51,7 @@ void FLASH_Read( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t * c
   uint16_t count = 0u;
   // Valid source input
   if(   (ptrTarget != NULL)
-     && (flashAddress < ptrHandler->EndAddress)
+     && (flashAddress <= ptrHandler->EndAddress)
      && (length != 0u) )
   {
     // prevent flash overflow
@@ -72,7 +74,19 @@ void FLASH_Read( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t * c
 
 void FLASH_Write( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t const * const ptrSource, uint16_t length )
 {
+  uint16_t currLength = 0u;
+  uint16_t remainLength = length;
 
+  if(   (flashAddress <= ptrHandler->EndAddress)
+     && (currLength != 0u) )
+  {
+    if ( (flashAddress + remainLength) > ptrHandler->EndAddress )
+    {
+      // Data to write longer than flash - only write valid range
+      remainLength = (uint16_t)(ptrHandler->EndAddress - flashAddress);
+    }
+
+  }
 }
 
 void FLASH_Erase( FLASH_Handler_t* ptrHandler )
