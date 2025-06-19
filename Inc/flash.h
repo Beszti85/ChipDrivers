@@ -21,6 +21,7 @@ typedef struct
   uint16_t            pinCS;
   FLASH_Type_e        DetectedFlash;
   uint32_t            EndAddress;
+  uint8_t             PageSize;
   uint8_t             TxBuffer[8u];
   uint8_t             RxBuffer[8u];
 } FLASH_Handler_t;
