@@ -79,7 +79,7 @@ void FLASH_Write( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t co
   uint16_t remainLength = length;
 
   if(   (flashAddress <= ptrHandler->EndAddress)
-     && (currLength != 0u) )
+     && (remainLength != 0u) )
   {
     if( (flashAddress + remainLength) > ptrHandler->EndAddress )
     {
@@ -126,4 +126,24 @@ static void WriteEnable( FLASH_Handler_t* ptrHandler )
   HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
 
   BusyWait(ptrHandler);
+}
+
+static void WritePage( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t const * const ptrSource, uint16_t length )
+{
+  if( ((flashAddress & ptrHandler->PageSize) + length) < ptrHandler->PageSize )
+  {
+    WriteEnable(ptrHandler);
+    // Send command and read response
+    ptrHandler->TxBuffer[0u] = CMD_READ;
+    ptrHandler->TxBuffer[1u] = (uint8_t)(flashAddress >> 16u);
+    ptrHandler->TxBuffer[2u] = (uint8_t)(flashAddress >> 8u);
+    ptrHandler->TxBuffer[3u] = (uint8_t)(flashAddress);
+    // Write SPI: flashAddress, then data
+    HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_RESET);
+    HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrHandler->TxBuffer, 4u, 100u);
+    HAL_SPI_Transmit(ptrHandler->ptrHSpi, ptrSource, length, 1000u);
+    HAL_GPIO_WritePin(ptrHandler->portCS, ptrHandler->pinCS, GPIO_PIN_SET);
+
+    BusyWait(ptrHandler);
+  }
 }
