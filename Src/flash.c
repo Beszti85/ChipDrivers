@@ -21,6 +21,7 @@
 
 static void BusyWait( FLASH_Handler_t* ptrHandler );
 static void WriteEnable( FLASH_Handler_t* ptrHandler );
+static void WritePage( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t const * const ptrSource, uint16_t length );
 
 void FLASH_Identification( FLASH_Handler_t* ptrHandler )
 {
@@ -75,7 +76,9 @@ void FLASH_Read( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t * c
 
 void FLASH_Write( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t const * const ptrSource, uint16_t length )
 {
+  uint32_t currAddress = flashAddress;
   uint16_t currLength = 0u;
+  uint16_t currIndex = 0u;
   uint16_t remainLength = length;
 
   if(   (flashAddress <= ptrHandler->EndAddress)
@@ -90,6 +93,34 @@ void FLASH_Write( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t co
     if( (flashAddress % ptrHandler->PageSize) + remainLength <= ptrHandler->PageSize )
     {
       // Write Page only once
+      WritePage( ptrHandler, flashAddress, ptrSource, remainLength );
+    }
+    else
+    {
+      // Call write page to fill the current page
+      currLength = (uint16_t)(ptrHandler->PageSize - (flashAddress % ptrHandler->PageSize));
+      WritePage( ptrHandler, flashAddress, ptrSource, currLength );
+      remainLength -= currLength;
+      currAddress += currLength;
+      currIndex += currLength;
+
+      // Write next pages
+      while( remainLength != 0u )
+      {
+        if( remainLength > ptrHandler->PageSize )
+        {
+          WritePage( ptrHandler, currAddress, &ptrSource[currIndex], ptrHandler->PageSize);
+          remainLength -= ptrHandler->PageSize;
+          currAddress += ptrHandler->PageSize;
+          currIndex += ptrHandler->PageSize;
+        }
+        else
+        {
+          // Last page
+          WritePage( ptrHandler, currAddress, &ptrSource[currIndex], remainLength);
+          remainLength = 0u;
+        }
+      }
     }
   }
 }
