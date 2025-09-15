@@ -5,6 +5,13 @@
  *      Author: drCsabesz
  */
 
+#include <stdint.h>
+#include <stdbool.h>
+#include "main.h"
+
+#ifndef INC_FLASH_H_
+#define INC_FLASH_H_
+
 typedef enum
 {
   FLASH_UNKNOWN = 0u,
@@ -30,3 +37,5 @@ void FLASH_Identification( FLASH_Handler_t* ptrHandler );
 void FLASH_Read( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t * const ptrTarget, uint16_t length );
 void FLASH_Write( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t const * const ptrSource, uint16_t length );
 void FLASH_Erase( FLASH_Handler_t* ptrHandler );
+
+#endif /* INC_FLASH_H_ */
