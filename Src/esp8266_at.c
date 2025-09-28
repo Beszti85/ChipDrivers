@@ -18,7 +18,7 @@ bool EspAtCmdRespOk = false;
 ESP8266_Status_u EspStatusFlags;
 ESP8266_CMD_ID ESP8266_LastAtCmd = ESP8266_CMD_ID_NONE;
 
-const char EspAtMessages[30u][20u] =
+const char EspAtMessages[30u][24u] =
 {
   "ready",
   "busy p",
