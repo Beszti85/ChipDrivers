@@ -33,9 +33,17 @@ typedef struct
   uint8_t             RxBuffer[8u];
 } FLASH_Handler_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void FLASH_Identification( FLASH_Handler_t* ptrHandler );
 void FLASH_Read( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t * const ptrTarget, uint16_t length );
 void FLASH_Write( FLASH_Handler_t* ptrHandler, uint32_t flashAddress, uint8_t const * const ptrSource, uint16_t length );
 void FLASH_Erase( FLASH_Handler_t* ptrHandler );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_FLASH_H_ */
