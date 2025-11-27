@@ -21,3 +21,8 @@ void MCP4725_Read(I2C_HandleTypeDef* ptrI2C)
 {
   HAL_I2C_Master_Receive(ptrI2C, MCP4725_ADDR, MCP4725_RxBuffer, 6u, 100u);
 }
+
+void MCP4725_Write(I2C_HandleTypeDef* ptrI2C)
+{
+  HAL_I2C_Master_Transmit(ptrI2C, MCP4725_ADDR, MCP475_TxBuffer, 6u, 100u);
+}
