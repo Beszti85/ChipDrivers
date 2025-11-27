@@ -150,10 +150,11 @@ void NRF24L01_WriteRegister1Byte( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegPa
   }
 }
 
-void NRF24L01_ReadRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
+uint8_t NRF24L01_ReadRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
 {
   ptrHandler->TxBuffer[0u] = CMD_READ_REGISTER | CmdParam[regId].Addr;
   SpiRead(ptrHandler, CmdParam[regId].Size);
+  return CmdParam[regId].Size;
 }
 
 void NRF24L01_WriteRegister( NRF24L01_Handler_t* ptrHandler, NRF24L01_RegParam_e regId )
