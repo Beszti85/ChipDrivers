@@ -7,7 +7,6 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "main.h"
 
 #include "main.h"
 #include "mcp23s17.h"
@@ -24,5 +23,5 @@ void MCP4725_Read(I2C_HandleTypeDef* ptrI2C)
 
 void MCP4725_Write(I2C_HandleTypeDef* ptrI2C)
 {
-  HAL_I2C_Master_Transmit(ptrI2C, MCP4725_ADDR, MCP475_TxBuffer, 6u, 100u);
+  HAL_I2C_Master_Transmit(ptrI2C, MCP4725_ADDR, MCP4725_TxBuffer, 6u, 100u);
 }
