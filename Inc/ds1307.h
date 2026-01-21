@@ -57,7 +57,8 @@ typedef enum
   Freq1Hz = 0,
   Freq4096Hz,
   Freq8192Hz,
-  Freq32768Hz
+  Freq32768Hz,
+  FreqOFF
 } DS1307_Frequency_e;
 
 #ifdef __cplusplus

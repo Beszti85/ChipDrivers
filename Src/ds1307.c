@@ -38,7 +38,14 @@ void DS1307_Set_Date ( DS1307_Handler_t* ptrHandler )
 void DS1307_SquareWaveOutput( DS1307_Handler_t* ptrHandler, DS1307_Frequency_e frequency )
 {
   ptrHandler->TxBuffer[0u] = REG_CONTROL;
-  ptrHandler->TxBuffer[1u] = 0x10u | (uint8_t)frequency;
+  if( frequency != FreqOFF )
+  {
+    ptrHandler->TxBuffer[1u] = 0x10u | (uint8_t)frequency;
+  }
+  else
+  {
+    ptrHandler->TxBuffer[1] = 0x00u;
+  }
 
   HAL_I2C_Master_Transmit(ptrHandler->ptrHI2c, ptrHandler->Address, ptrHandler->TxBuffer, 2u, 100u);
 }
