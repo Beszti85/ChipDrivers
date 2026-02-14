@@ -10,6 +10,16 @@
 
 #include "main.h"
 
-void MCP4725_Read(I2C_HandleTypeDef* ptrI2C);
+typedef struct
+{
+  I2C_HandleTypeDef* ptrHI2c;
+  uint8_t TxBuffer[6u];
+  uint8_t RxBuffer[6u];
+  uint8_t Address;
+  uint8_t VddValue;
+} MCP4725_Handle_s;
+
+void MCP4725_Read(MCP4725_Handle_s* ptrHandler);
+void MCP4725_Write(MCP4725_Handle_s* ptrHandler);
 
 #endif /* INC_MCP4725_H_ */
