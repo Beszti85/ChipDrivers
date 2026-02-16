@@ -26,6 +26,8 @@ typedef enum
   MCP4725_WRITE_DAC_EE = 0x60u
 } MCP4725_WriteCmd_e;
 
+void MCP4725_SetOutput(MCP4725_Handle_s* ptrHandler, uint16_t voltage, MCP4725_WriteCmd_e wrCmdType);
+bool MCP4725_ReadBusy(MCP4725_Handle_s* ptrHandler);
 void MCP4725_Read(MCP4725_Handle_s* ptrHandler, uint8_t length);
 void MCP4725_Write(MCP4725_Handle_s* ptrHandler, uint8_t length);
 
