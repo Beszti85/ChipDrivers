@@ -138,7 +138,6 @@ void ESP8266_AtReportHandler( uint8_t* ptrReport )
   {
     if( !strcmp( EspAtReportTable[index].ReportMsg, ptrReport ) )
     {
-
       EspStatusFlags.EspFlagsUnion |= EspAtReportTable[index].statusSet;
       break;
     }
